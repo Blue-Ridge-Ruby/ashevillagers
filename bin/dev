@@ -1,2 +1,2 @@
 #!/usr/bin/env ruby
-exec "foreman start -f Procfile.dev", *ARGV
+exec "overmind start -f Procfile.dev", *ARGV

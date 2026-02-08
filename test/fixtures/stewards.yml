@@ -1,0 +1,11 @@
+one:
+  email: admin@ashevillagers.org
+  first_name: Admin
+  last_name: Steward
+  password_digest: <%= BCrypt::Password.create("password") %>
+
+two:
+  email: steward2@ashevillagers.org
+  first_name: Second
+  last_name: Steward
+  password_digest: <%= BCrypt::Password.create("password") %>

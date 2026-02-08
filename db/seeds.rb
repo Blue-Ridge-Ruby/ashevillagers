@@ -7,3 +7,10 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+Steward.find_or_create_by!(email: "mayor@blueridgeruby.com") do |s|
+  s.first_name = "Jeremy"
+  s.last_name = "Smith"
+  s.password = "password"
+  s.password_confirmation = "password"
+end

@@ -1,0 +1,31 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Stewards</h1>
+  <%= link_to "Add steward", new_town_hall_steward_path, class: "bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700" %>
+</div>
+
+<table class="w-full bg-white rounded shadow">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="text-left px-4 py-2">Name</th>
+      <th class="text-left px-4 py-2">Email</th>
+      <th class="text-left px-4 py-2">Phone</th>
+      <th class="px-4 py-2"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @stewards.each do |steward| %>
+      <tr class="border-t">
+        <td class="px-4 py-2"><%= steward.full_name %></td>
+        <td class="px-4 py-2"><%= steward.email %></td>
+        <td class="px-4 py-2"><%= steward.mobile_phone %></td>
+        <td class="px-4 py-2 text-right">
+          <% unless steward == current_steward %>
+            <%= button_to "Delete", town_hall_steward_path(steward), method: :delete,
+                  data: { turbo_confirm: "Remove #{steward.full_name}?" },
+                  class: "text-red-600 hover:underline bg-transparent border-0 cursor-pointer" %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

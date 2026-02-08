@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Town Hall — Ashevillagers" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= vite_client_tag %>
+    <%= vite_javascript_tag 'application' %>
+  </head>
+
+  <body class="bg-gray-50 min-h-screen">
+    <nav class="bg-indigo-700 text-white">
+      <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+        <span class="font-bold text-lg">Town Hall</span>
+        <% if current_steward %>
+          <div class="flex items-center gap-4 text-sm">
+            <span><%= current_steward.full_name %></span>
+            <%= link_to "Stewards", town_hall_stewards_path, class: "hover:underline" %>
+            <%= button_to "Sign out", town_hall_session_path, method: :delete, class: "hover:underline bg-transparent border-0 text-white cursor-pointer" %>
+          </div>
+        <% end %>
+      </div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+      <% if notice %>
+        <div class="mb-4 p-3 rounded bg-green-100 text-green-800"><%= notice %></div>
+      <% end %>
+      <% if alert %>
+        <div class="mb-4 p-3 rounded bg-red-100 text-red-800"><%= alert %></div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>

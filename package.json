@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "vite": "^7.3.1",
+    "vite-plugin-ruby": "^5.1.2"
+  },
+  "dependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "@tailwindcss/vite": "^4.1.18",
+    "svelte": "^5.50.0",
+    "tailwindcss": "^4.1.18"
+  }
+}

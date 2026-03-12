@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_08_002954) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_28_221022) do
   create_table "stewards", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", null: false
@@ -20,5 +20,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_08_002954) do
     t.string "password_digest", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_stewards_on_email", unique: true
+  end
+
+  create_table "villagers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.string "tito_admin_url"
+    t.string "tito_ticket_id"
+    t.string "tito_ticket_slug"
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_villagers_on_email", unique: true
   end
 end

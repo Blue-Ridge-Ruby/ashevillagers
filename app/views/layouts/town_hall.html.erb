@@ -18,6 +18,7 @@
           <div class="flex items-center gap-4 text-sm">
             <span><%= current_steward.full_name %></span>
             <%= link_to "Stewards", town_hall_stewards_path, class: "hover:underline" %>
+            <%= link_to "Config", town_hall_configurations_path, class: "hover:underline" %>
             <%= button_to "Sign out", town_hall_session_path, method: :delete, class: "hover:underline bg-transparent border-0 text-white cursor-pointer" %>
           </div>
         <% end %>

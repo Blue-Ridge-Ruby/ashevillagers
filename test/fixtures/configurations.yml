@@ -1,0 +1,11 @@
+site_name:
+  name: site_name
+  value: Ashevillagers
+
+api_key:
+  name: tito_api_key
+  value: sk_live_abc123xyz
+
+max_attendees:
+  name: max_attendees
+  value: "500"

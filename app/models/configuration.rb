@@ -3,6 +3,10 @@ class Configuration < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true
 
+  def self.expected_names
+    @expected_names ||= Set.new
+  end
+
   # -- Hash-like class interface --
 
   def self.[](name)

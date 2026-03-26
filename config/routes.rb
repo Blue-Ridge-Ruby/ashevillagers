@@ -14,5 +14,8 @@ Rails.application.routes.draw do
     resource :password_reset, only: %i[new create edit update]
     resources :stewards, only: %i[index new create destroy]
     resources :configurations
+    resources :villagers do
+      post :sync, on: :collection
+    end
   end
 end

@@ -4,13 +4,14 @@ class CreateVillagers < ActiveRecord::Migration[8.1]
       t.string :first_name
       t.string :last_name
       t.string :email, null: false
-      t.string :tito_admin_url
-      t.string :tito_ticket_id
+      t.string :tito_account_slug
+      t.string :tito_event_slug
       t.string :tito_ticket_slug
 
       t.timestamps
     end
 
-    add_index :villagers, :email, unique: true
+    add_index :villagers, :tito_ticket_slug, unique: true
+    add_index :villagers, :email
   end
 end

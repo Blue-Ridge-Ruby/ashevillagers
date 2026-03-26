@@ -35,10 +35,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_13_002532) do
     t.string "email", null: false
     t.string "first_name"
     t.string "last_name"
-    t.string "tito_admin_url"
-    t.string "tito_ticket_id"
+    t.string "tito_account_slug"
+    t.string "tito_event_slug"
     t.string "tito_ticket_slug"
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_villagers_on_email", unique: true
+    t.index ["email"], name: "index_villagers_on_email"
+    t.index ["tito_ticket_slug"], name: "index_villagers_on_tito_ticket_slug", unique: true
   end
 end

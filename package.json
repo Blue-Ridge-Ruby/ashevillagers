@@ -3,13 +3,13 @@
   "type": "module",
   "devDependencies": {
     "@herb-tools/linter": "^0.9.2",
-    "vite": "^7.3.1",
-    "vite-plugin-ruby": "^5.1.2"
+    "vite": "^8.0.3",
+    "vite-plugin-ruby": "^5.2.1"
   },
   "dependencies": {
-    "@sveltejs/vite-plugin-svelte": "^6.2.4",
-    "@tailwindcss/vite": "^4.1.18",
-    "svelte": "^5.50.0",
-    "tailwindcss": "^4.1.18"
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "@tailwindcss/vite": "^4.2.2",
+    "svelte": "^5.55.0",
+    "tailwindcss": "^4.2.2"
   }
 }

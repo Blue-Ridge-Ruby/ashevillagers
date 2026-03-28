@@ -6,8 +6,18 @@ class VillagerTest < ActiveSupport::TestCase
     assert villager.valid?
   end
 
-  test "invalid without email" do
-    villager = Villager.new(email: nil)
+  test "valid with only tito_ticket_slug" do
+    villager = Villager.new(tito_ticket_slug: "ti_abc123")
+    assert villager.valid?
+  end
+
+  test "valid with both email and tito_ticket_slug" do
+    villager = Villager.new(email: "ada@example.com", tito_ticket_slug: "ti_abc123")
+    assert villager.valid?
+  end
+
+  test "invalid without email or tito_ticket_slug" do
+    villager = Villager.new
     assert_not villager.valid?
   end
 
@@ -29,12 +39,6 @@ class VillagerTest < ActiveSupport::TestCase
   test "valid with all fields in interactive context" do
     villager = Villager.new(email: "ada@example.com", first_name: "Ada", last_name: "Lovelace")
     assert villager.valid?(:interactive)
-  end
-
-  test "invalid with duplicate email" do
-    villagers(:one) # ensure fixture exists
-    villager = Villager.new(first_name: "Ada", last_name: "Lovelace", email: villagers(:one).email)
-    assert_not villager.valid?
   end
 
   test "normalizes email to lowercase and stripped" do

@@ -9,6 +9,7 @@ class Villager < ApplicationRecord
   validates :first_name, presence: true, on: :interactive
   validates :last_name, presence: true, on: :interactive
   validates :email, presence: true, on: :interactive
+  validates :email, presence: true, unless: :tito_ticket_slug
 
   normalizes :first_name, :last_name, :tito_ticket_slug, with: ->(v) { v.presence }
   normalizes :email, with: ->(email) { email.strip.downcase.presence }

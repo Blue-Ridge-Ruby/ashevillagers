@@ -63,10 +63,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install npm packages
+        run: npm ci
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+
+      - name: Build assets
+        run: bin/rails assets:precompile
+        env:
+          RAILS_ENV: test
 
       - name: Run tests
         env:
@@ -88,10 +102,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install npm packages
+        run: npm ci
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+
+      - name: Build assets
+        run: bin/rails assets:precompile
+        env:
+          RAILS_ENV: test
 
       - name: Run System Tests
         env:

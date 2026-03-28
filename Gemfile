@@ -35,7 +35,8 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 # Tito API client (local development copy)
-gem "tito_ruby", path: "../tito_ruby"
+# gem "tito_ruby", path: "../tito_ruby"
+gem "tito_ruby"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -2,7 +2,7 @@ require "test_helper"
 
 class TownHall::ConfigurationsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    post town_hall_session_path, params: { email: stewards(:one).email, password: "password" }
+    post town_hall_session_path, params: {email: stewards(:one).email, password: "password"}
   end
 
   test "index requires authentication" do
@@ -47,7 +47,7 @@ class TownHall::ConfigurationsControllerTest < ActionDispatch::IntegrationTest
   test "create" do
     assert_difference "Configuration.count", 1 do
       post town_hall_configurations_path, params: {
-        configuration: { name: "new_setting", value: "new_value" }
+        configuration: {name: "new_setting", value: "new_value"}
       }
     end
     assert_redirected_to town_hall_configurations_path
@@ -56,7 +56,7 @@ class TownHall::ConfigurationsControllerTest < ActionDispatch::IntegrationTest
   test "create with invalid data" do
     assert_no_difference "Configuration.count" do
       post town_hall_configurations_path, params: {
-        configuration: { name: "", value: "val" }
+        configuration: {name: "", value: "val"}
       }
     end
     assert_response :unprocessable_entity
@@ -70,7 +70,7 @@ class TownHall::ConfigurationsControllerTest < ActionDispatch::IntegrationTest
   test "update" do
     config = configurations(:site_name)
     patch town_hall_configuration_path(config), params: {
-      configuration: { value: "New Name" }
+      configuration: {value: "New Name"}
     }
     assert_redirected_to town_hall_configurations_path
     assert_equal "New Name", config.reload.value
@@ -79,7 +79,7 @@ class TownHall::ConfigurationsControllerTest < ActionDispatch::IntegrationTest
   test "update with invalid data" do
     config = configurations(:site_name)
     patch town_hall_configuration_path(config), params: {
-      configuration: { name: "" }
+      configuration: {name: ""}
     }
     assert_response :unprocessable_entity
   end

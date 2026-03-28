@@ -146,6 +146,7 @@ class Configuration::ConfigurableTest < ActiveSupport::TestCase
   def new_configurable_class(&block)
     Class.new do
       include Configuration::Configurable
+
       class_eval(&block)
     end
   end

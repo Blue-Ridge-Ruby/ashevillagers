@@ -2,7 +2,7 @@ require "test_helper"
 
 class TownHall::StewardsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    post town_hall_session_path, params: { email: stewards(:one).email, password: "password" }
+    post town_hall_session_path, params: {email: stewards(:one).email, password: "password"}
   end
 
   test "index requires authentication" do
@@ -40,7 +40,7 @@ class TownHall::StewardsControllerTest < ActionDispatch::IntegrationTest
   test "create with invalid data" do
     assert_no_difference "Steward.count" do
       post town_hall_stewards_path, params: {
-        steward: { email: "", first_name: "", last_name: "", password: "" }
+        steward: {email: "", first_name: "", last_name: "", password: ""}
       }
     end
     assert_response :unprocessable_entity

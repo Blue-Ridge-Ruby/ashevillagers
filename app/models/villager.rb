@@ -1,5 +1,6 @@
 class Villager < ApplicationRecord
   include Configuration::Configurable
+
   configure_with :tito_account_slug, :tito_event_slug, :tito_api_token, instance_methods: false
 
   before_save :memorialize_tito_config

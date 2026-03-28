@@ -3,7 +3,7 @@ require "ostruct"
 
 class TownHall::VillagersControllerTest < ActionDispatch::IntegrationTest
   setup do
-    post town_hall_session_path, params: { email: stewards(:one).email, password: "password" }
+    post town_hall_session_path, params: {email: stewards(:one).email, password: "password"}
   end
 
   test "index requires authentication" do
@@ -26,7 +26,7 @@ class TownHall::VillagersControllerTest < ActionDispatch::IntegrationTest
   test "create" do
     assert_difference "Villager.count", 1 do
       post town_hall_villagers_path, params: {
-        villager: { first_name: "New", last_name: "Villager", email: "new@example.com" }
+        villager: {first_name: "New", last_name: "Villager", email: "new@example.com"}
       }
     end
     assert_redirected_to town_hall_villagers_path
@@ -35,7 +35,7 @@ class TownHall::VillagersControllerTest < ActionDispatch::IntegrationTest
   test "create with invalid data" do
     assert_no_difference "Villager.count" do
       post town_hall_villagers_path, params: {
-        villager: { first_name: "", last_name: "", email: "" }
+        villager: {first_name: "", last_name: "", email: ""}
       }
     end
     assert_response :unprocessable_entity
@@ -49,7 +49,7 @@ class TownHall::VillagersControllerTest < ActionDispatch::IntegrationTest
   test "update" do
     villager = villagers(:one)
     patch town_hall_villager_path(villager), params: {
-      villager: { first_name: "Updated" }
+      villager: {first_name: "Updated"}
     }
     assert_redirected_to town_hall_villagers_path
     assert_equal "Updated", villager.reload.first_name
@@ -57,7 +57,7 @@ class TownHall::VillagersControllerTest < ActionDispatch::IntegrationTest
 
   test "update with invalid data" do
     patch town_hall_villager_path(villagers(:one)), params: {
-      villager: { email: "" }
+      villager: {email: ""}
     }
     assert_response :unprocessable_entity
   end

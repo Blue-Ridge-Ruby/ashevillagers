@@ -6,7 +6,7 @@ class StewardMailerTest < ActionMailer::TestCase
     mail = StewardMailer.password_reset(steward)
 
     assert_equal "Reset your password", mail.subject
-    assert_equal [ steward.email ], mail.to
+    assert_equal [steward.email], mail.to
     assert_match "Reset my password", mail.body.encoded
     assert_match "1 hour", mail.body.encoded
   end

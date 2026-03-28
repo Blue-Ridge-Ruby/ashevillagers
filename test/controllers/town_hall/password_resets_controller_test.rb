@@ -8,14 +8,14 @@ class TownHall::PasswordResetsControllerTest < ActionDispatch::IntegrationTest
 
   test "create with valid email sends reset and redirects" do
     assert_enqueued_emails 1 do
-      post town_hall_password_reset_path, params: { email: stewards(:one).email }
+      post town_hall_password_reset_path, params: {email: stewards(:one).email}
     end
     assert_redirected_to new_town_hall_session_path
   end
 
   test "create with unknown email still redirects with same message" do
     assert_no_enqueued_emails do
-      post town_hall_password_reset_path, params: { email: "nobody@example.com" }
+      post town_hall_password_reset_path, params: {email: "nobody@example.com"}
     end
     assert_redirected_to new_town_hall_session_path
     follow_redirect!

@@ -123,6 +123,36 @@ class ConfigurationTest < ActiveSupport::TestCase
     assert_equal Configuration.to_h, Configuration.to_hash
   end
 
+  # -- all_and_expected --
+
+  test "all_and_expected includes persisted configurations" do
+    results = Configuration.all_and_expected
+    names = results.map(&:name)
+    assert_includes names, "site_name"
+    assert_includes names, "max_attendees"
+  end
+
+  test "all_and_expected includes expected but missing configurations as new records" do
+    results = Configuration.all_and_expected
+    tito_slug = results.find { |c| c.name == "tito_account_slug" }
+    assert_not_nil tito_slug
+    assert_not tito_slug.persisted?
+  end
+
+  test "all_and_expected does not duplicate existing expected names" do
+    Configuration.create!(name: "tito_account_slug", value: "demo")
+    results = Configuration.all_and_expected
+    matches = results.select { |c| c.name == "tito_account_slug" }
+    assert_equal 1, matches.size
+    assert matches.first.persisted?
+  end
+
+  test "all_and_expected is sorted by name" do
+    results = Configuration.all_and_expected
+    names = results.map(&:name)
+    assert_equal names.sort, names
+  end
+
   # -- secret? --
 
   test "secret? is true when name contains key" do

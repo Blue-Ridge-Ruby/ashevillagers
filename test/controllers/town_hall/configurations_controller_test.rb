@@ -24,9 +24,24 @@ class TownHall::ConfigurationsControllerTest < ActionDispatch::IntegrationTest
     assert_match "3xyz", response.body
   end
 
+  test "index shows expected but missing configurations with create link" do
+    # expected_names includes tito_account_slug etc. from Configurable;
+    # these aren't in fixtures, so they should appear as "not set"
+    get town_hall_configurations_path
+    assert_response :success
+    assert_select "td", text: "not set"
+    assert_select "a[href=?]", new_town_hall_configuration_path(name: "tito_account_slug"), text: "Create"
+  end
+
   test "new" do
     get new_town_hall_configuration_path
     assert_response :success
+  end
+
+  test "new with name param prefills the name field" do
+    get new_town_hall_configuration_path(name: "tito_account_slug")
+    assert_response :success
+    assert_select "input[name='configuration[name]'][value='tito_account_slug']"
   end
 
   test "create" do

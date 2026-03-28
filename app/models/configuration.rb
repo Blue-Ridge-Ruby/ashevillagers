@@ -7,6 +7,12 @@ class Configuration < ApplicationRecord
     @expected_names ||= Set.new
   end
 
+  def self.all_and_expected
+    existing = order(:name).to_a
+    existing_names = existing.map(&:name).to_set
+    missing = (expected_names - existing_names).sort.map { |name| new(name: name) }
+    (existing + missing).sort_by(&:name)
+  end
   # -- Hash-like class interface --
 
   def self.[](name)

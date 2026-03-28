@@ -1,11 +1,11 @@
 module TownHall
   class ConfigurationsController < TownHallController
     def index
-      @configurations = Configuration.order(:name)
+      @configurations = Configuration.all_and_expected
     end
 
     def new
-      @configuration = Configuration.new
+      @configuration = Configuration.new(name: params[:name])
     end
 
     def create

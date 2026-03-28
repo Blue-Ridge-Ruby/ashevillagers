@@ -34,6 +34,12 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
 
+# Propshaft is required to serve assets from Rails engine gems (mission_control-jobs)
+gem "propshaft"
+
+# Solid Queue job dashboard
+gem "mission_control-jobs"
+
 # Tito API client (local development copy)
 # gem "tito_ruby", path: "../tito_ruby"
 gem "tito_ruby"

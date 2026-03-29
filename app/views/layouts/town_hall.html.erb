@@ -16,7 +16,7 @@
         <span class="font-bold text-lg">Town Hall</span>
         <% if current_steward %>
           <div class="flex items-center gap-4 text-sm">
-            <span><%= current_steward.full_name %></span>
+            <%= link_to current_steward.full_name, edit_town_hall_profile_path, class: "hover:underline" %>
             <%= link_to "Villagers", town_hall_villagers_path, class: "hover:underline" %>
             <%= link_to "Stewards", town_hall_stewards_path, class: "hover:underline" %>
             <%= link_to "Config", town_hall_configurations_path, class: "hover:underline" %>

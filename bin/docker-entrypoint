@@ -1,8 +1,13 @@
 #!/bin/bash -e
 
+# Fix ownership of the storage directory. Railway and similar platforms mount
+# volumes as root, but the app runs as the unprivileged rails user.
+mkdir -p /rails/storage
+chown -R 1000:1000 /rails/storage
+
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  ./bin/rails db:prepare
+  gosu rails ./bin/rails db:prepare
 fi
 
-exec "${@}"
+exec gosu rails "${@}"

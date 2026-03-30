@@ -47,7 +47,7 @@ module TownHall
       connected = 0
       added = 0
 
-      Villager.tito_client.tickets.each do |ticket|
+      Villager.tito_client.tickets.where(state: %w[complete]).each do |ticket|
         if slugs[ticket.slug]
           already += 1
         elsif (villager = emails[ticket.email.to_s.downcase])

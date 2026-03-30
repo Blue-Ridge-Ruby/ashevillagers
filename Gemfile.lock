@@ -386,7 +386,7 @@ GEM
     thruster (0.1.20-arm64-darwin)
     thruster (0.1.20-x86_64-linux)
     timeout (0.6.1)
-    tito_ruby (0.2.0)
+    tito_ruby (0.3.0)
       activemodel (>= 7.1, < 9.0)
       faraday (~> 2.0)
     tsort (0.2.0)
@@ -462,4 +462,4 @@ DEPENDENCIES
   web-console
 
 BUNDLED WITH
-   2.6.9
+  4.0.9

@@ -137,11 +137,28 @@ class TownHall::VillagersControllerTest < ActionDispatch::IntegrationTest
   end
 
   def stub_tito_tickets(tickets)
-    mock_client = OpenStruct.new(tickets: tickets)
+    # Wrap in an object that swallows chained query methods (.where, .order, etc.)
+    # and delegates enumeration to the underlying array.
+    stub = ChainableStub.new(tickets)
+    mock_client = OpenStruct.new(tickets: stub)
     original = Villager.method(:tito_client)
     Villager.define_singleton_method(:tito_client) { mock_client }
     yield
   ensure
     Villager.define_singleton_method(:tito_client, original)
+  end
+
+  class ChainableStub
+    include Enumerable
+
+    def initialize(records)
+      @records = records
+    end
+
+    def each(&) = @records.each(&)
+    def where(**) = self
+    def order(**) = self
+    def search(*) = self
+    def expand(*) = self
   end
 end

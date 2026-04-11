@@ -1,0 +1,9 @@
+<h1>Sign in to Ashevillagers</h1>
+
+<p>Hi <%= @villager.first_name || "there" %>,</p>
+
+<p>Click the link below to sign in to your Ashevillagers profile:</p>
+
+<p><%= link_to "Sign in", @login_url %></p>
+
+<p>This link will expire in 1 hour. If you didn't request this, you can safely ignore this email.</p>

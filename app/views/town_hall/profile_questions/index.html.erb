@@ -1,0 +1,33 @@
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Profile Questions</h1>
+  <%= link_to "Add question", new_town_hall_profile_question_path, class: "bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700" %>
+</div>
+
+<table class="w-full bg-white rounded shadow">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="text-left px-4 py-2 w-12">#</th>
+      <th class="text-left px-4 py-2">Question</th>
+      <th class="text-left px-4 py-2 w-20">Active</th>
+      <th class="px-4 py-2"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @profile_questions.each do |question| %>
+      <tr class="border-t">
+        <td class="px-4 py-2 text-gray-500"><%= question.position %></td>
+        <td class="px-4 py-2"><%= question.question %></td>
+        <td class="px-4 py-2">
+          <% if question.active? %>
+            <span class="text-green-600">Yes</span>
+          <% else %>
+            <span class="text-gray-400">No</span>
+          <% end %>
+        </td>
+        <td class="px-4 py-2 text-right">
+          <%= link_to "Edit", edit_town_hall_profile_question_path(question), class: "text-indigo-600 hover:underline" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

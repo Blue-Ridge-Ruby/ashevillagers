@@ -9,6 +9,17 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
+  # Public / villager-facing
+  resource :session, only: %i[new create destroy], controller: "sessions" do
+    get :callback, on: :collection
+    post :callback, on: :collection
+  end
+  resource :profile, only: %i[new create edit update], controller: "profiles"
+  root "profiles#index"
+
+  # Public profile page — must be after all other top-level routes
+  get "/:id", to: "profiles#show", as: :public_profile
+
   mount MissionControl::Jobs::Engine, at: "/town_hall/jobs"
 
   namespace :town_hall do
@@ -17,6 +28,7 @@ Rails.application.routes.draw do
     resources :stewards, only: %i[index new create destroy]
     resource :profile, only: %i[edit update]
     resources :configurations
+    resources :profile_questions, except: :destroy
     resources :villagers do
       post :sync, on: :collection
     end

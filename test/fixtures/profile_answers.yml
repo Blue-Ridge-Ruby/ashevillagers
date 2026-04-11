@@ -1,0 +1,29 @@
+one_sport:
+  profile: one
+  profile_question: sport
+  answer: Mountain biking
+
+one_retirement:
+  profile: one
+  profile_question: retirement
+  answer: Woodworker
+
+one_shop:
+  profile: one
+  profile_question: shop
+  answer: Tea shop
+
+one_degree:
+  profile: one
+  profile_question: degree
+  answer: Botany
+
+two_sport:
+  profile: two
+  profile_question: sport
+  answer: Rock climbing
+
+two_retirement:
+  profile: two
+  profile_question: retirement
+  answer: Baker

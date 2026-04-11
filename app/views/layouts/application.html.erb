@@ -9,10 +9,9 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%# tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
@@ -22,7 +21,39 @@
     <%= vite_javascript_tag 'application' %>
   </head>
 
-  <body>
+  <body class="bg-white min-h-screen font-sans">
+    <nav class="bg-[#2672B5] text-white">
+      <div class="mx-auto px-4 py-3 flex items-center justify-between container">
+        <%= link_to root_path, class: "flex items-center gap-2" do %>
+          <img src="/images/brr-logo-border.svg" alt="Blue Ridge Ruby" class="h-10">
+        <% end %>
+
+        <div class="flex items-center gap-6 text-base font-medium">
+          <span class="hidden sm:inline">April 30 &amp; May 1, 2026 &middot; <a href="https://blueridgeruby.com/#register" class="text-[#ADD6F2] underline">Register Now</a></span>
+          <% if current_villager %>
+            <% if current_villager.profile %>
+              <%= link_to "Manage", edit_profile_path, class: "border border-white rounded px-4 py-1.5 font-medium hover:bg-white/10 transition" %>
+            <% else %>
+              <%= link_to "Create Profile", new_profile_path, class: "border border-white rounded px-4 py-1.5 font-medium hover:bg-white/10 transition" %>
+            <% end %>
+          <% else %>
+            <%= link_to "Login", new_session_path, class: "border border-white rounded px-4 py-1.5 font-medium hover:bg-white/10 transition" %>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+
+    <% if notice %>
+      <div class="max-w-6xl mx-auto px-4 mt-4">
+        <div class="p-3 rounded bg-green-100 text-green-800"><%= notice %></div>
+      </div>
+    <% end %>
+    <% if alert %>
+      <div class="max-w-6xl mx-auto px-4 mt-4">
+        <div class="p-3 rounded bg-red-100 text-red-800"><%= alert %></div>
+      </div>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

@@ -1,0 +1,12 @@
+one:
+  villager: one
+  first_name: Jane
+  last_name: Doe
+  twitter_url: https://twitter.com/janedoe
+  bluesky_url: https://bsky.app/profile/janedoe
+  linkedin_url: https://linkedin.com/in/janedoe
+
+two:
+  villager: two
+  first_name: John
+  last_name: Smith

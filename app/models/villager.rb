@@ -3,6 +3,8 @@ class Villager < ApplicationRecord
 
   configure_with :tito_account_slug, :tito_event_slug, :tito_api_token, instance_methods: false
 
+  has_one :profile, dependent: :destroy
+
   before_save :memorialize_tito_config
 
   generates_token_for :login, expires_in: 30.days

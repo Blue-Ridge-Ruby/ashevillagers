@@ -1,0 +1,77 @@
+<% if profile.errors.any? %>
+  <div class="mb-6 p-3 rounded bg-red-100 text-red-800">
+    <ul>
+      <% profile.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: profile, url: profile.persisted? ? profile_path : profile_path, method: profile.persisted? ? :patch : :post, class: "space-y-8" do |f| %>
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <%= f.label :first_name, class: "block text-sm font-bold text-gray-900" %>
+      <%= f.text_field :first_name, required: true, class: "mt-1 block w-full rounded border-gray-300 shadow-sm" %>
+    </div>
+    <div>
+      <%= f.label :last_name, class: "block text-sm font-bold text-gray-900" %>
+      <%= f.text_field :last_name, required: true, class: "mt-1 block w-full rounded border-gray-300 shadow-sm" %>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="text-sm font-bold text-gray-900 mb-2">Upload a Profile Photo</h2>
+    <div class="flex items-center gap-4">
+      <div class="w-24 h-24 rounded bg-gray-100 flex items-center justify-center overflow-hidden shrink-0">
+        <% if profile.photo.attached? && profile.photo.content_type.start_with?("image/") %>
+          <%= image_tag profile.photo.variant(resize_to_fill: [200, 200]), class: "w-full h-full object-cover" %>
+        <% else %>
+          <svg class="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        <% end %>
+      </div>
+      <%= f.file_field :photo, accept: "image/png,image/jpeg,image/webp,image/gif", class: "block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#2672B5] file:text-white hover:file:bg-[#3a6291] file:cursor-pointer" %>
+    </div>
+  </div>
+
+  <% if questions.any? %>
+    <div>
+      <h2 class="text-sm font-bold text-gray-900 mb-4">Answer <%= questions.size == 1 ? "a Question" : "#{questions.size} Questions" %></h2>
+      <div class="space-y-4">
+        <%= f.fields_for :profile_answers, profile.profile_answers.sort_by { |pa| questions.index { |q| q.id == pa.profile_question_id } || 999 } do |af| %>
+          <% question = questions.detect { |q| q.id == af.object.profile_question_id } %>
+          <% next unless question %>
+          <div>
+            <p class="text-sm text-gray-700"><%= question.question %></p>
+            <%= af.hidden_field :profile_question_id %>
+            <%= af.hidden_field :id if af.object.persisted? %>
+            <%= af.text_field :answer, class: "mt-1 block w-full rounded border-gray-300 shadow-sm" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div>
+    <h2 class="text-sm font-bold text-gray-900 mb-1">Add Sharing Links</h2>
+    <p class="text-sm text-gray-500 mb-4">Enter any links you want to share on the <%= link_to "Ashevillagers", root_path, class: "underline" %> page.</p>
+    <div class="space-y-4">
+      <% [
+        [:twitter_url, "X/Twitter", "https://x.com/yourhandle"],
+        [:bluesky_url, "Bluesky", "https://bsky.app/profile/yourhandle"],
+        [:mastodon_url, "Mastodon", "https://ruby.social/@yourhandle"],
+        [:linkedin_url, "LinkedIn", "https://www.linkedin.com/in/yourhandle/"],
+        [:website_url, "Website or Blog", "https://yoursite.com"],
+      ].each do |attr, label, placeholder| %>
+        <div>
+          <%= f.label attr, label, class: "block text-sm text-gray-700" %>
+          <%= f.url_field attr, placeholder: placeholder, class: "mt-1 block w-full rounded border-gray-300 shadow-sm" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.submit profile.persisted? ? "Save Profile" : "Create Profile", class: "bg-[#2672B5] text-white py-2 px-6 rounded font-medium hover:bg-[#3a6291] cursor-pointer" %>
+  </div>
+<% end %>

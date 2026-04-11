@@ -1,0 +1,29 @@
+sport:
+  question: "What new sport would you like to pick up?"
+  llm_prompt: ""
+  active: true
+  position: 1
+
+retirement:
+  question: "If you had a non-tech job in retirement, what would it be?"
+  llm_prompt: ""
+  active: true
+  position: 2
+
+shop:
+  question: "If you owned a shop, what kind would it be?"
+  llm_prompt: ""
+  active: true
+  position: 3
+
+degree:
+  question: "If you could get a master's degree in a new field, what would it be?"
+  llm_prompt: ""
+  active: true
+  position: 4
+
+inactive_question:
+  question: "What's your favorite color?"
+  llm_prompt: ""
+  active: false
+  position: 99

@@ -4,6 +4,6 @@ class VillagerMailer < ApplicationMailer
     @token = villager.generate_token_for(:login)
     @login_url = callback_session_url(token: @token)
 
-    mail to: villager.email, subject: "Your Ashevillagers login link"
+    mail to: villager.email, from:, subject: "Your Ashevillagers login link"
   end
 end

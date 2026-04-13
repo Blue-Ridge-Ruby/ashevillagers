@@ -12,7 +12,7 @@
 
   <body class="bg-gray-50 min-h-screen">
     <nav class="bg-indigo-700 text-white">
-      <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="container mx-auto px-4 py-3 flex items-center justify-between">
         <span class="font-bold text-lg">Town Hall</span>
         <% if current_steward %>
           <div class="flex items-center gap-4 text-sm">
@@ -27,7 +27,7 @@
       </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto px-4 py-8">
+    <main class="container mx-auto px-4 py-8">
       <% if notice %>
         <div class="mb-4 p-3 rounded bg-green-100 text-green-800"><%= notice %></div>
       <% end %>

@@ -316,6 +316,21 @@ class ConfigurationTest < ActiveSupport::TestCase
     assert_nil config.display_value
   end
 
+  test "display_value truncates long secrets to last 39 chars with ellipsis" do
+    config = Configuration.new(name: "api_key", value: "sk_live_" + "x" * 50)
+    result = config.display_value
+    assert_equal 40, result.length # ellipsis + 39 chars
+    assert result.start_with?("…")
+    assert result.end_with?("x" * 4)
+  end
+
+  test "display_value does not truncate 40-char secret" do
+    config = Configuration.new(name: "api_key", value: "x" * 40)
+    result = config.display_value
+    assert_equal 40, result.length
+    assert_not result.start_with?("…")
+  end
+
   private
 
   def with_clean_expect_state

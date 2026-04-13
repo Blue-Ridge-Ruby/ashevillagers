@@ -67,7 +67,8 @@ class Configuration < ApplicationRecord
   def display_value
     return value unless secret? && value.present? && value.length > 4
 
-    "#{"*" * (value.length - 4)}#{value.last(4)}"
+    masked = "#{"*" * (value.length - 4)}#{value.last(4)}"
+    (masked.length > 40) ? "…#{masked.last(39)}" : masked
   end
 
   private

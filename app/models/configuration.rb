@@ -2,10 +2,27 @@ class Configuration < ApplicationRecord
   SECRET_SEGMENTS = /(?:^|_)(key|secret|token)(?:_|$)/i
 
   validates :name, presence: true, uniqueness: true
+  after_commit :apply_callbacks
 
-  def self.expected_names
-    @expected_names ||= Set.new
+  def self.expect(*names, &block)
+    names = names.map(&:to_s)
+    expected_names.merge(names)
+    case [names, block]
+    in [name], nil then self[name]
+    in Array, nil then values_at(*names)
+    else
+      callback = -> { block.call(*values_at(*names)) }
+      @callbacks ||= Hash.new { |h, k| h[k] = [] }
+      names.each do |name|
+        @callbacks[name] << callback
+      end
+      callback.call
+    end
   end
+
+  def self.expected_names = @expected_names ||= Set.new
+
+  def self.callbacks = @callbacks.dup
 
   def self.all_and_expected
     existing = order(:name).to_a
@@ -15,9 +32,7 @@ class Configuration < ApplicationRecord
   end
   # -- Hash-like class interface --
 
-  def self.[](name)
-    find_by(name: name)&.value
-  end
+  def self.[](name) = find_by(name: name)&.value
 
   def self.fetch(name, *args, &block)
     name = name.to_s
@@ -43,19 +58,19 @@ class Configuration < ApplicationRecord
     pluck(:name, :value).to_h
   end
 
-  def self.to_hash
-    to_h
-  end
+  def self.to_hash = to_h
 
   # -- Instance methods --
 
-  def secret?
-    SECRET_SEGMENTS.match?(name)
-  end
+  def secret? = SECRET_SEGMENTS.match?(name)
 
   def display_value
     return value unless secret? && value.present? && value.length > 4
 
     "#{"*" * (value.length - 4)}#{value.last(4)}"
   end
+
+  private
+
+  def apply_callbacks = self.class.callbacks&.[](name)&.each(&:call)
 end

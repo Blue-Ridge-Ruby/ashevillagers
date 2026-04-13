@@ -153,6 +153,118 @@ class ConfigurationTest < ActiveSupport::TestCase
     assert_equal names.sort, names
   end
 
+  # -- expect (no block) --
+
+  test "expect with single name registers it as expected and returns value" do
+    with_clean_expect_state do
+      result = Configuration.expect(:site_name)
+      assert_equal "Ashevillagers", result
+      assert_includes Configuration.expected_names, "site_name"
+    end
+  end
+
+  test "expect with single name returns nil for missing configuration" do
+    with_clean_expect_state do
+      result = Configuration.expect(:nonexistent)
+      assert_nil result
+      assert_includes Configuration.expected_names, "nonexistent"
+    end
+  end
+
+  test "expect with multiple names returns values_at" do
+    with_clean_expect_state do
+      result = Configuration.expect(:site_name, :max_attendees)
+      assert_equal ["Ashevillagers", "500"], result
+    end
+  end
+
+  test "expect accepts string names" do
+    with_clean_expect_state do
+      result = Configuration.expect("site_name")
+      assert_equal "Ashevillagers", result
+      assert_includes Configuration.expected_names, "site_name"
+    end
+  end
+
+  # -- expect (with block / callbacks) --
+
+  test "expect with block calls it immediately with current values" do
+    with_clean_expect_state do
+      received = nil
+      Configuration.expect(:site_name) { |val| received = val }
+      assert_equal "Ashevillagers", received
+    end
+  end
+
+  test "expect with block and multiple names passes all values" do
+    with_clean_expect_state do
+      received = nil
+      Configuration.expect(:site_name, :max_attendees) { |a, b| received = [a, b] }
+      assert_equal ["Ashevillagers", "500"], received
+    end
+  end
+
+  test "expect with block registers callback" do
+    with_clean_expect_state do
+      Configuration.expect(:site_name) { |_| }
+      assert Configuration.callbacks.key?("site_name")
+      assert_equal 1, Configuration.callbacks["site_name"].size
+    end
+  end
+
+  test "expect with block and multiple names registers callback under each name" do
+    with_clean_expect_state do
+      Configuration.expect(:site_name, :max_attendees) { |_a, _b| }
+      assert_equal 1, Configuration.callbacks["site_name"].size
+      assert_equal 1, Configuration.callbacks["max_attendees"].size
+    end
+  end
+
+  # -- after_commit fires callbacks --
+
+  test "creating a configuration fires registered callbacks" do
+    with_clean_expect_state do
+      call_count = 0
+      Configuration.expect(:new_setting) { |_| call_count += 1 }
+      assert_equal 1, call_count # immediate call
+
+      Configuration.create!(name: "new_setting", value: "hello")
+      assert_equal 2, call_count
+    end
+  end
+
+  test "updating a configuration fires registered callbacks" do
+    with_clean_expect_state do
+      received = nil
+      Configuration.expect(:site_name) { |val| received = val }
+      assert_equal "Ashevillagers", received
+
+      configurations(:site_name).update!(value: "New Name")
+      assert_equal "New Name", received
+    end
+  end
+
+  test "callback receives updated values for multi-name expect" do
+    with_clean_expect_state do
+      received = nil
+      Configuration.expect(:site_name, :max_attendees) { |a, b| received = [a, b] }
+
+      configurations(:site_name).update!(value: "Changed")
+      assert_equal ["Changed", "500"], received
+    end
+  end
+
+  test "committing an unrelated configuration does not fire callback" do
+    with_clean_expect_state do
+      call_count = 0
+      Configuration.expect(:site_name) { |_| call_count += 1 }
+      assert_equal 1, call_count
+
+      configurations(:max_attendees).update!(value: "999")
+      assert_equal 1, call_count
+    end
+  end
+
   # -- secret? --
 
   test "secret? is true when name contains key" do
@@ -205,6 +317,17 @@ class ConfigurationTest < ActiveSupport::TestCase
   end
 
   private
+
+  def with_clean_expect_state
+    saved_expected = Configuration.instance_variable_get(:@expected_names)
+    saved_callbacks = Configuration.instance_variable_get(:@callbacks)
+    Configuration.instance_variable_set(:@expected_names, Set.new)
+    Configuration.instance_variable_set(:@callbacks, nil)
+    yield
+  ensure
+    Configuration.instance_variable_set(:@expected_names, saved_expected)
+    Configuration.instance_variable_set(:@callbacks, saved_callbacks)
+  end
 
   def count_queries(&block)
     count = 0

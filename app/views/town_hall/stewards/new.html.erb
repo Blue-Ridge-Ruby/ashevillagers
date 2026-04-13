@@ -12,39 +12,39 @@
   <% end %>
 
   <%= form_with model: @steward, url: town_hall_stewards_path, class: "space-y-4" do |f| %>
-    <div>
-      <%= f.label :first_name, class: "block text-sm font-medium text-gray-700" %>
-      <%= f.text_field :first_name, required: true, class: "mt-1 block w-full rounded border-gray-300 shadow-sm" %>
-    </div>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">First Name</legend>
+      <%= f.text_field :first_name, required: true, class: "input" %>
+    </fieldset>
 
-    <div>
-      <%= f.label :last_name, class: "block text-sm font-medium text-gray-700" %>
-      <%= f.text_field :last_name, required: true, class: "mt-1 block w-full rounded border-gray-300 shadow-sm" %>
-    </div>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Last Name</legend>
+      <%= f.text_field :last_name, required: true, class: "input" %>
+    </fieldset>
 
-    <div>
-      <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
-      <%= f.email_field :email, required: true, class: "mt-1 block w-full rounded border-gray-300 shadow-sm" %>
-    </div>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Email</legend>
+      <%= f.email_field :email, required: true, class: "input" %>
+    </fieldset>
 
-    <div>
-      <%= f.label :mobile_phone, class: "block text-sm font-medium text-gray-700" %>
-      <%= f.phone_field :mobile_phone, class: "mt-1 block w-full rounded border-gray-300 shadow-sm" %>
-    </div>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Mobile Phone</legend>
+      <%= f.phone_field :mobile_phone, class: "input" %>
+    </fieldset>
 
-    <div>
-      <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
-      <%= f.password_field :password, required: true, class: "mt-1 block w-full rounded border-gray-300 shadow-sm" %>
-    </div>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Password</legend>
+      <%= f.password_field :password, required: true, class: "input" %>
+    </fieldset>
 
-    <div>
-      <%= f.label :password_confirmation, class: "block text-sm font-medium text-gray-700" %>
-      <%= f.password_field :password_confirmation, required: true, class: "mt-1 block w-full rounded border-gray-300 shadow-sm" %>
-    </div>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Password Confirmation</legend>
+      <%= f.password_field :password_confirmation, required: true, class: "input" %>
+    </fieldset>
 
     <div class="flex gap-2">
-      <%= f.submit "Add steward", class: "bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 cursor-pointer" %>
-      <%= link_to "Cancel", town_hall_stewards_path, class: "py-2 px-4 text-gray-600 hover:underline" %>
+      <%= f.submit "Add steward", class: "btn bg-indigo-600 text-white hover:bg-indigo-700" %>
+      <%= link_to "Cancel", town_hall_stewards_path, class: "btn btn-ghost" %>
     </div>
   <% end %>
 </div>

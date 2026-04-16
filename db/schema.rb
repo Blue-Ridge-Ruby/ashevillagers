@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_04_002240) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_16_001409) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -50,6 +50,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_002240) do
   create_table "profile_answers", force: :cascade do |t|
     t.text "answer"
     t.datetime "created_at", null: false
+    t.string "job_title"
     t.integer "profile_id", null: false
     t.integer "profile_question_id", null: false
     t.datetime "updated_at", null: false
@@ -61,7 +62,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_002240) do
   create_table "profile_questions", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
-    t.text "llm_prompt"
+    t.string "llm_prompt"
     t.integer "position", default: 0, null: false
     t.text "question", null: false
     t.datetime "updated_at", null: false

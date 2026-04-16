@@ -11,13 +11,13 @@
 <%= form_with model: profile_question, url: profile_question.persisted? ? town_hall_profile_question_path(profile_question) : town_hall_profile_questions_path, class: "space-y-4" do |f| %>
   <fieldset class="fieldset">
     <legend class="fieldset-legend">Question</legend>
-    <%= f.text_area :question, required: true, rows: 2, class: "textarea" %>
+    <%= f.text_area :question, required: true, rows: 2, class: "textarea w-full" %>
   </fieldset>
 
   <fieldset class="fieldset">
-    <legend class="fieldset-legend">LLM Prompt</legend>
-    <%= f.text_area :llm_prompt, rows: 8, class: "textarea" %>
-    <p class="label">Prompt sent to the LLM when generating profile images for this question. Use <code class="font-mono">%s</code> to interpolate the name of the animal.</p>
+    <legend class="fieldset-legend">LLM Instructions</legend>
+    <%= f.text_area :llm_prompt, rows: 8, class: "textarea w-full" %>
+    <p class="label">Instructions sent to the LLM to generate a job title from the user's answer to this question.</p>
   </fieldset>
 
   <fieldset class="fieldset">

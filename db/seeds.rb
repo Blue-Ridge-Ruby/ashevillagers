@@ -18,25 +18,68 @@ end
 [
   {
     question: "What new sport would you like to pick up?",
-    llm_prompt: "You are an illustrator of children's books commissioned to create anthropomorphic animal illustrations in the style of Richard Scarry. Based on the user-provided profile image and the user-provided sport below, please create an illustration of the user in the style of Richard Scarry as a %s athlete from Asheville, North Carolina. Please make sure you can see every part of the animal's body, but don't include many additional objects on or around the figure. Make sure that the illustration is on a white background and don't put any words on the illustration.",
-    position: 1
+    llm_prompt: <<~PROMPT.squish,
+      The user will name a sport. Respond with the kind of athelete who does that sport
+      in no more than three words, title-case. (e.g., "Swimmer" "Mountain Biker"
+      "Pickleball Player") If the named sport doesn't make sense, get
+      creative or euphemistic in your interpretation or choose a kind of athelete arbitrarily.
+      Always provide a kind of athelete and keep it G or PG-rated. Do not use trademarked names.
+      Respond with ONLY the kind of athelete, nothing else.
+    PROMPT
+    position: 1,
+    active: true
   }, {
     question: "If you had a non-tech job in retirement, what would it be?",
-    llm_prompt: "You are an illustrator of children's books commissioned to create anthropomorphic animal illustrations in the style of Richard Scarry. Based on the user-provided profile image and the user-provided job below, please create an illustration of the user in the style of Richard Scarry as a %s from Asheville, North Carolina working that job. Please make sure you can see every part of the animal's body, but don't include many additional objects on or around the figure. Make sure that the illustration is on a white background and don't put any words on the illustration.",
-    position: 2
+    llm_prompt: <<~PROMPT.squish,
+      The user will provide a job. Respond with a short version of that job title in
+      no more than three words, title-case. (e.g., "Tea Shop Owner"
+      "Accountant" "Donut Artistan") If the named job doesn't make sense, get
+      creative or euphemistic in your interpretation or choose a title arbitrarily.
+      Always provide a job title and keep it G or PG-rated. Do not use trademarked names.
+      Respond with ONLY the job title, nothing else.
+    PROMPT
+    position: 2,
+    active: true
   }, {
     question: "If you owned a shop, what kind would it be?",
-    llm_prompt: "You are an illustrator of children's books commissioned to create anthropomorphic animal illustrations in the style of Richard Scarry. Based on the user-provided profile image and the user-provided kind of shop below, please create an illustration of the user in the style of Richard Scarry as a %s from Asheville, North Carolina as the proprietor of that shop. Please make sure you can see every part of the animal's body, but don't include many additional objects on or around the figure. Make sure that the illustration is on a white background and don't put any words on the illustration.",
+    llm_prompt: <<~PROMPT.squish,
+      Give a short description or title in no more than three words of someone
+      who owns or operates the kind of shop the user names. (e.g., "Tea Shop Owner"
+      "Accountant" "Donut Artistan") If the named shop type doesn't make sense, get
+      creative or euphemistic in your interpretation or choose a title arbitrarily.
+      Always provide a title and keep it G or PG-rated. Do not use trademarked names.
+      Respond with ONLY the title/description, nothing else.
+    PROMPT
     position: 3
   }, {
     question: "If you could get a master's degree in a new field, what would it be?",
-    llm_prompt: "You are an illustrator of children's books commissioned to create anthropomorphic animal illustrations in the style of Richard Scarry. Based on the user-provided profile image and the user-provided field of study below, please create an illustration of the user in the style of Richard Scarry as a %s from Asheville, North Carolina doing something that makes sense for having an advanced degree in the field of study. Please make sure you can see every part of the animal's body, but don't include many additional objects on or around the figure. Make sure that the illustration is on a white background and don't put any words on the illustration.",
-    position: 4
+    llm_prompt: <<~PROMPT.squish,
+      Give a short job description or title in no more than three words of someone
+      with an advanced degree in the field of study the user names. (e.g., "Doctor"
+      "Paleontologist" "Arborist") If the named field doesn't make sense, get creative
+      or euphemistic in your interpretation or choose an occupation arbitrarily.
+      Always provide an occupation and keep it G or PG-rated.
+      Respond with ONLY the title/occupation, nothing else.
+    PROMPT
+    position: 4,
+    active: true
+  }, {
+    question: "What's an art or craft you do now or would like to learn?",
+    llm_prompt: <<~PROMPT.squish,
+      Give a short job description or title in no more than three words of someone
+      engaged in the art or craft the user names. (e.g., "Sculptor" "Fiber Artist"
+      "Carpenter") If the named craft doesn't make sense, get creative or
+      euphemistic in your interpretation or choose a type of artist arbitrarily.
+      Always provide a type of craftsperson or artist and keep it G or PG-rated.
+      Respond with ONLY the title, nothing else.
+    PROMPT
+    position: 5,
+    active: false
   }
 ].each do |attrs|
   ProfileQuestion.find_or_create_by!(question: attrs[:question]) do |pq|
     pq.position = attrs[:position]
     pq.llm_prompt = attrs[:llm_prompt]
-    pq.active = true
+    pq.active = attrs[:active]
   end
 end

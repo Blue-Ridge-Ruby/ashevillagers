@@ -40,13 +40,7 @@ class Profile < ApplicationRecord
 
   def acceptable_photo
     return unless photo.attached?
-
-    unless photo.content_type.in?(%w[image/png image/jpeg image/webp image/gif])
-      errors.add(:photo, "must be a PNG, JPEG, WebP, or GIF")
-    end
-
-    if photo.byte_size > 5.megabytes
-      errors.add(:photo, "must be less than 5MB")
-    end
+    errors.add(:photo, "must be a PNG, JPEG, or WebP") unless photo.content_type.in?(%w[image/png image/jpeg image/webp])
+    errors.add(:photo, "must be less than 5MB") if photo.byte_size > 5.megabytes
   end
 end

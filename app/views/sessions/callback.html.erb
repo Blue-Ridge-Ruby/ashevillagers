@@ -12,4 +12,4 @@
   <% end %>
 </div>
 
-<script>document.getElementById("login-callback").requestSubmit()</script>
+<script nonce="<%= request.content_security_policy_nonce %>">document.getElementById("login-callback").requestSubmit()</script>

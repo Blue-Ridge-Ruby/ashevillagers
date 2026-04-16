@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "shopify.ruby-lsp",
+    "bradlc.vscode-tailwindcss",
+    "svelte.svelte-vscode",
+    "marcoroth.herb-lsp"
+  ]
+}

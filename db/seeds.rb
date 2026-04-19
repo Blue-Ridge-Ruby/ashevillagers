@@ -50,7 +50,8 @@ end
       Always provide a title and keep it G or PG-rated. Do not use trademarked names.
       Respond with ONLY the title/description, nothing else.
     PROMPT
-    position: 3
+    position: 3,
+    active: true
   }, {
     question: "If you could get a master's degree in a new field, what would it be?",
     llm_prompt: <<~PROMPT.squish,

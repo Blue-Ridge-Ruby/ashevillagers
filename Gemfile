@@ -75,4 +75,5 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "ruby_llm", "~> 1.14"
+# .paint(with:) support comes in 1.15, not yet released as of now. Pinned at a known-working commit on main.
+gem "ruby_llm", github: "crmne/ruby_llm", ref: "4371a1b250a2960d8891548e9fb4633de39bcd40"

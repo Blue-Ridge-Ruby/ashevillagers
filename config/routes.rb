@@ -20,8 +20,6 @@ Rails.application.routes.draw do
   # Public profile page — must be after all other top-level routes
   get "/:id", to: "profiles#show", as: :public_profile
 
-  mount MissionControl::Jobs::Engine, at: "/town_hall/jobs"
-
   namespace :town_hall do
     resource :session, only: %i[new create destroy]
     resource :password_reset, only: %i[new create edit update]

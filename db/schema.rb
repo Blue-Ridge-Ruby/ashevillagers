@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_16_001409) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_22_000000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -45,6 +45,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_001409) do
     t.datetime "updated_at", null: false
     t.string "value"
     t.index ["name"], name: "index_configurations_on_name", unique: true
+  end
+
+  create_table "image_generations", force: :cascade do |t|
+    t.string "animal"
+    t.datetime "created_at", null: false
+    t.boolean "cursed", default: false, null: false
+    t.integer "profile_answer_id", null: false
+    t.text "prompt"
+    t.datetime "updated_at", null: false
+    t.index ["profile_answer_id"], name: "index_image_generations_on_profile_answer_id", unique: true
   end
 
   create_table "profile_answers", force: :cascade do |t|
@@ -108,6 +118,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_001409) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "image_generations", "profile_answers"
   add_foreign_key "profile_answers", "profile_questions"
   add_foreign_key "profile_answers", "profiles"
   add_foreign_key "profiles", "villagers"

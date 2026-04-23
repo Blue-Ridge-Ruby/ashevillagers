@@ -3,6 +3,9 @@ class ProfileAnswer < ApplicationRecord
 
   belongs_to :profile
   belongs_to :profile_question
+  has_one :image_generation, dependent: :destroy
+
+  delegate :question, to: :profile_question
 
   configure_with :model_for_job_title
 

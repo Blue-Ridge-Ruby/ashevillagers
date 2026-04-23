@@ -5,6 +5,7 @@ class Profile < ApplicationRecord
 
   has_one_attached :photo
   has_many :profile_answers, dependent: :destroy
+  has_many :image_generations, through: :profile_answers
   accepts_nested_attributes_for :profile_answers
 
   validates :first_name, presence: true

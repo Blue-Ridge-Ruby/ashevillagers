@@ -487,6 +487,7 @@ DEPENDENCIES
   standard
   thruster
   tito_ruby
+  turbo-rails
   tzinfo-data
   vite_rails
   web-console

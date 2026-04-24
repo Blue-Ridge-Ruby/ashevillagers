@@ -2,6 +2,7 @@ class Profile < ApplicationRecord
   SOCIAL_LINKS = %i[twitter_url bluesky_url mastodon_url linkedin_url website_url].freeze
 
   belongs_to :villager
+  belongs_to :selected_image_generation, class_name: "ImageGeneration", optional: true
 
   has_one_attached :photo
   has_many :profile_answers, dependent: :destroy
@@ -11,6 +12,7 @@ class Profile < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
   validate :acceptable_photo
+  validate :selected_image_belongs_to_this_profile
 
   def to_param
     "#{id}-#{first_name}-#{last_name}".parameterize
@@ -37,11 +39,36 @@ class Profile < ApplicationRecord
     self.last_name ||= villager&.last_name
   end
 
+  def next_unanswered_question(questions = ProfileQuestion.active)
+    questions.detect { |q| answer_for(q).blank? }
+  end
+
+  def finalized?
+    selected_image_generation_id.present? && first_name.present? && last_name.present?
+  end
+
+  def current_phase(questions = ProfileQuestion.active)
+    return :photo unless photo.attached?
+    return :question if next_unanswered_question(questions)
+    return :finalize unless finalized?
+    :complete
+  end
+
   private
 
   def acceptable_photo
     return unless photo.attached?
     errors.add(:photo, "must be a PNG, JPEG, or WebP") unless photo.content_type.in?(%w[image/png image/jpeg image/webp])
     errors.add(:photo, "must be less than 5MB") if photo.byte_size > 5.megabytes
+  end
+
+  def selected_image_belongs_to_this_profile
+    return unless selected_image_generation_id.present?
+    return unless selected_image_generation
+    if selected_image_generation.profile_answer&.profile_id != id
+      errors.add(:selected_image_generation, "must belong to this profile")
+    elsif !selected_image_generation.image.attached?
+      errors.add(:selected_image_generation, "is still generating")
+    end
   end
 end

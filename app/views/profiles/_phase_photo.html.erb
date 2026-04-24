@@ -1,0 +1,19 @@
+<div class="space-y-6">
+  <div>
+    <h2 class="text-lg font-bold text-gray-900 mb-1">Step 1 of 3: Upload a reference photo</h2>
+    <p class="text-sm text-gray-600">
+      We'll use this photo as a reference for generating your profile portraits.
+      It will <strong>not</strong> be shown publicly.
+      PNG, JPEG, or WebP, under 5MB.
+    </p>
+  </div>
+
+  <%= form_with model: profile, url: profile_path, method: :patch, class: "space-y-6" do |f| %>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">Profile Photo</legend>
+      <%= f.file_field :photo, accept: "image/png,image/jpeg,image/webp", required: true, class: "file-input" %>
+    </fieldset>
+
+    <%= f.submit "Upload & Continue", class: "btn bg-[#2672B5] text-white hover:bg-[#3a6291]" %>
+  <% end %>
+</div>

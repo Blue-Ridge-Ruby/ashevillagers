@@ -1,0 +1,25 @@
+<%
+  question = profile.next_unanswered_question(questions)
+  answer_record = profile.profile_answers.find_by(profile_question: question)
+  total = questions.size
+  current_index = questions.index(question) + 1
+%>
+
+<div class="space-y-6">
+  <div>
+    <h2 class="text-lg font-bold text-gray-900 mb-1">Step 2 of 3: Question <%= current_index %> of <%= total %></h2>
+    <p class="text-sm text-gray-600">
+      Your answer will be used to generate a portrait that captures something personal about you.
+      (Generating each portrait takes about a minute; it'll run in the background while you answer the rest.)
+    </p>
+  </div>
+
+  <%= form_with model: answer_record, url: profile_profile_answer_path(answer_record), method: :patch, scope: :profile_answer, class: "space-y-6" do |f| %>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend"><%= question.question %></legend>
+      <%= f.text_area :answer, rows: 4, required: true, class: "textarea w-full", autofocus: true %>
+    </fieldset>
+
+    <%= f.submit "Save & Continue", class: "btn bg-[#2672B5] text-white hover:bg-[#3a6291]" %>
+  <% end %>
+</div>

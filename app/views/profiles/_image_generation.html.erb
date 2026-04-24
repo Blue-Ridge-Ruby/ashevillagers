@@ -1,0 +1,22 @@
+<%= tag.div id: dom_id(image_generation), class: "relative rounded border-2 border-gray-200 overflow-hidden bg-gray-50" do %>
+  <% if image_generation.image.attached? %>
+    <label class="block cursor-pointer">
+      <%= image_tag image_generation.image.variant(resize_to_fill: [300, 300]), class: "w-full aspect-square object-cover", alt: "Generated portrait" %>
+      <div class="p-2 flex items-center gap-2 bg-white">
+        <%= radio_button_tag "profile[selected_image_generation_id]", image_generation.id, local_assigns[:selected_id] == image_generation.id, class: "radio radio-sm" %>
+        <span class="text-sm">Choose this</span>
+      </div>
+    </label>
+  <% else %>
+    <div class="w-full aspect-square flex items-center justify-center bg-gray-100 animate-pulse">
+      <div class="text-center">
+        <div class="text-sm text-gray-500">Still generating…</div>
+        <div class="text-xs text-gray-400 mt-1">(~60s)</div>
+      </div>
+    </div>
+    <div class="p-2 flex items-center gap-2 bg-white">
+      <input type="radio" disabled class="radio radio-sm" />
+      <span class="text-sm text-gray-400">Choose this</span>
+    </div>
+  <% end %>
+<% end %>

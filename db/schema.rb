@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_22_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_24_055649) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -85,10 +85,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_22_000000) do
     t.string "last_name"
     t.string "linkedin_url"
     t.string "mastodon_url"
+    t.integer "selected_image_generation_id"
     t.string "twitter_url"
     t.datetime "updated_at", null: false
     t.integer "villager_id", null: false
     t.string "website_url"
+    t.index ["selected_image_generation_id"], name: "index_profiles_on_selected_image_generation_id"
     t.index ["villager_id"], name: "index_profiles_on_villager_id", unique: true
   end
 
@@ -121,5 +123,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_22_000000) do
   add_foreign_key "image_generations", "profile_answers"
   add_foreign_key "profile_answers", "profile_questions"
   add_foreign_key "profile_answers", "profiles"
+  add_foreign_key "profiles", "image_generations", column: "selected_image_generation_id"
   add_foreign_key "profiles", "villagers"
 end

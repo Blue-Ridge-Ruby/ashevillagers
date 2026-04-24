@@ -7,6 +7,7 @@
     "vite-plugin-ruby": "^5.2.1"
   },
   "dependencies": {
+    "@hotwired/turbo-rails": "^8.0.0",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@tailwindcss/vite": "^4.2.2",
     "daisyui": "^5.5.19",

@@ -1,3 +1,2 @@
 import '~/styles/application.css'
-
-console.log('Vite + Rails ready')
+import '@hotwired/turbo-rails'

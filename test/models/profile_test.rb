@@ -60,4 +60,73 @@ class ProfileTest < ActiveSupport::TestCase
     profile.ensure_answers_for(questions)
     assert_equal questions.size, profile.profile_answers.size
   end
+
+  test "current_phase returns :photo when no photo attached" do
+    assert_equal :photo, profiles(:one).current_phase
+  end
+
+  test "current_phase returns :question when photo attached but any answer blank" do
+    profile = profiles(:two)
+    attach_test_photo(profile)
+    assert_equal :question, profile.reload.current_phase
+  end
+
+  test "current_phase returns :finalize when all answers present but not selected" do
+    profile = profiles(:one)
+    attach_test_photo(profile)
+    assert_equal :finalize, profile.reload.current_phase
+  end
+
+  test "current_phase returns :complete when selected image + name present" do
+    profile = profiles(:one)
+    attach_test_photo(profile)
+    answer = profile.profile_answers.first
+    ig = answer.create_image_generation!(animal: "fox", prompt: "stub")
+    ig.image.attach(
+      io: File.open(Rails.root.join("test/fixtures/files/test.png")),
+      filename: "gen.png",
+      content_type: "image/png"
+    )
+    profile.update!(selected_image_generation: ig)
+    assert_equal :complete, profile.reload.current_phase
+  end
+
+  test "next_unanswered_question returns the first active question missing an answer" do
+    profile = profiles(:two)
+    missing = profile.next_unanswered_question
+    assert_equal profile_questions(:shop), missing
+  end
+
+  test "selected_image must belong to this profile" do
+    profile = profiles(:one)
+    other_answer = profiles(:two).profile_answers.first
+    ig = other_answer.create_image_generation!(animal: "fox", prompt: "stub")
+    ig.image.attach(
+      io: File.open(Rails.root.join("test/fixtures/files/test.png")),
+      filename: "gen.png",
+      content_type: "image/png"
+    )
+    profile.selected_image_generation = ig
+    refute profile.valid?
+    assert profile.errors[:selected_image_generation].any?
+  end
+
+  test "selected_image must have attached image" do
+    profile = profiles(:one)
+    answer = profile.profile_answers.first
+    ig = answer.create_image_generation!(animal: "fox", prompt: "stub")
+    profile.selected_image_generation = ig
+    refute profile.valid?
+    assert_includes profile.errors[:selected_image_generation].join, "still generating"
+  end
+
+  private
+
+  def attach_test_photo(profile)
+    profile.photo.attach(
+      io: File.open(Rails.root.join("test/fixtures/files/test.png")),
+      filename: "test.png",
+      content_type: "image/png"
+    )
+  end
 end

@@ -36,7 +36,7 @@ class ProfileAnswersControllerTest < ActionDispatch::IntegrationTest
   test "update with blank answer re-renders edit" do
     sign_in_villager(villagers(:two))
     answer = profile_answers(:two_sport)
-    profiles(:two).photo.attach(
+    profiles(:two).reference_photo.attach(
       io: File.open(Rails.root.join("test/fixtures/files/test.png")),
       filename: "test.png",
       content_type: "image/png"

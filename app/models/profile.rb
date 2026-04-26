@@ -4,14 +4,14 @@ class Profile < ApplicationRecord
   belongs_to :villager
   belongs_to :selected_image_generation, class_name: "ImageGeneration", optional: true
 
-  has_one_attached :photo
+  has_one_attached :reference_photo
   has_many :profile_answers, dependent: :destroy
   has_many :image_generations, through: :profile_answers
   accepts_nested_attributes_for :profile_answers
 
   validates :first_name, presence: true
   validates :last_name, presence: true
-  validate :acceptable_photo
+  validate :acceptable_reference_photo
   validate :selected_image_belongs_to_this_profile
 
   def to_param
@@ -23,7 +23,7 @@ class Profile < ApplicationRecord
   end
 
   def answer_for(question)
-    profile_answers.detect { |pa| pa.profile_question_id == question.id }&.answer
+    profile_answers.detect { |pa| pa.profile_question_id == question.id }
   end
 
   # Build or find a ProfileAnswer for each active question, for form rendering
@@ -40,7 +40,15 @@ class Profile < ApplicationRecord
   end
 
   def next_unanswered_question(questions = ProfileQuestion.active)
-    questions.detect { |q| answer_for(q).blank? }
+    questions.find { answer_for(it)&.answer.blank? }
+  end
+
+  def last_answer(questions = ProfileQuestion.active)
+    questions.all.filter_map do |q|
+      a = answer_for(q)
+      next nil unless a&.answer.present?
+      a
+    end.last
   end
 
   def finalized?
@@ -48,7 +56,7 @@ class Profile < ApplicationRecord
   end
 
   def current_phase(questions = ProfileQuestion.active)
-    return :photo unless photo.attached?
+    return :photo unless reference_photo.attached?
     return :question if next_unanswered_question(questions)
     return :finalize unless finalized?
     :complete
@@ -56,10 +64,10 @@ class Profile < ApplicationRecord
 
   private
 
-  def acceptable_photo
-    return unless photo.attached?
-    errors.add(:photo, "must be a PNG, JPEG, or WebP") unless photo.content_type.in?(%w[image/png image/jpeg image/webp])
-    errors.add(:photo, "must be less than 5MB") if photo.byte_size > 5.megabytes
+  def acceptable_reference_photo
+    return unless reference_photo.attached?
+    errors.add(:reference_photo, "must be a PNG, JPEG, or WebP") unless reference_photo.content_type.in?(%w[image/png image/jpeg image/webp])
+    errors.add(:reference_photo, "must be less than 5MB") if reference_photo.byte_size > 5.megabytes
   end
 
   def selected_image_belongs_to_this_profile

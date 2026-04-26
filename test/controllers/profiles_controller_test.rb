@@ -29,37 +29,17 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
   end
 
-  test "new requires login" do
-    get new_profile_path
-    assert_redirected_to new_session_path
-  end
+  # -- edit auto-creates profile when missing --
 
-  # -- new/create --
-
-  test "new redirects to edit when profile exists" do
-    sign_in_villager(villagers(:one))
-    get new_profile_path
-    assert_redirected_to edit_profile_path
-  end
-
-  test "new shows start screen for villager without profile" do
-    villager = villagers(:unlinked)
-    villager.profile&.destroy
-    sign_in_villager(villager)
-    get new_profile_path
-    assert_response :success
-    assert_select "form[action='#{profile_path}'][method='post']"
-  end
-
-  test "create builds a profile using villager's name" do
+  test "edit builds a profile using villager's name when none exists" do
     villager = villagers(:unlinked)
     villager.profile&.destroy
     sign_in_villager(villager)
 
     assert_difference "Profile.count", 1 do
-      post profile_path
+      get edit_profile_path
     end
-    assert_redirected_to edit_profile_path
+    assert_response :success
     assert_equal "Pat", villager.reload.profile.first_name
   end
 
@@ -69,7 +49,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     sign_in_villager(villagers(:one))
     get edit_profile_path
     assert_response :success
-    assert_select "input[type=file][name='profile[photo]']"
+    assert_select "input[type=file][name='profile[reference_photo]']"
   end
 
   test "edit renders phase_question when photo present but answers missing" do
@@ -78,7 +58,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     sign_in_villager(villagers(:two))
     get edit_profile_path
     assert_response :success
-    assert_select "textarea[name='profile_answer[answer]']"
+    assert_select "input[name='profile_answer[answer]']"
   end
 
   test "edit renders phase_finalize when all answers present" do
@@ -109,16 +89,16 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
   test "update with photo attaches photo and redirects" do
     sign_in_villager(villagers(:one))
     patch profile_path, params: {
-      profile: {photo: fixture_file_upload("test.png", "image/png")}
+      profile: {reference_photo: fixture_file_upload("test.png", "image/png")}
     }
     assert_redirected_to edit_profile_path
-    assert profiles(:one).reload.photo.attached?
+    assert profiles(:one).reload.reference_photo.attached?
   end
 
   test "update with invalid photo renders edit" do
     sign_in_villager(villagers(:one))
     patch profile_path, params: {
-      profile: {photo: fixture_file_upload("test.txt", "text/plain")}
+      profile: {reference_photo: fixture_file_upload("test.txt", "text/plain")}
     }
     assert_response :unprocessable_entity
   end
@@ -170,7 +150,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     villager.profile&.destroy
     sign_in_villager(villager)
     get root_path
-    assert_select "a[href='#{new_profile_path}']", text: "Create Profile"
+    assert_select "a[href='#{edit_profile_path}']", text: "Create Profile"
   end
 
   private
@@ -180,7 +160,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   def attach_photo(profile)
-    profile.photo.attach(
+    profile.reference_photo.attach(
       io: File.open(Rails.root.join("test/fixtures/files/test.png")),
       filename: "test.png",
       content_type: "image/png"
@@ -188,6 +168,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   def create_image_generation(profile_answer)
+    profile_answer.update_column(:job_title, "Cyclist")
     ig = profile_answer.create_image_generation!(animal: "fox", prompt: "stub")
     ig.image.attach(
       io: File.open(Rails.root.join("test/fixtures/files/test.png")),

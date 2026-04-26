@@ -1,7 +1,7 @@
 <%= link_to public_profile_path(profile), class: "block rounded-lg shadow-md overflow-hidden hover:shadow-lg transition text-left" do %>
   <div class="bg-gray-100 aspect-square flex items-center justify-center">
-    <% if profile.photo.attached? %>
-      <%= image_tag profile.photo.variant(resize_to_fill: [400, 400]), class: "w-full h-full object-cover", alt: profile.first_name %>
+    <% if profile.selected_image_generation&.image&.attached? %>
+      <%= image_tag profile.selected_image_generation.image.variant(resize_to_fill: [400, 400]), class: "w-full h-full object-cover", alt: profile.first_name %>
     <% else %>
       <div class="text-gray-400 text-6xl">
         <svg class="w-20 h-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>

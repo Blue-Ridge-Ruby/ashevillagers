@@ -1,43 +1,26 @@
 class ProfilesController < ApplicationController
-  before_action :authenticate_villager!, only: %i[new create edit update]
+  before_action :authenticate_villager!, only: %i[edit update]
 
   def index
-    @profiles = Profile.includes(:villager, :profile_answers, photo_attachment: :blob)
+    @profiles = Profile.includes(:villager, :profile_answers, selected_image_generation: {image_attachment: :blob})
       .where.not(first_name: [nil, ""])
       .order(:last_name, :first_name)
   end
 
   def show
     @profile = Profile.includes(profile_answers: :profile_question).find(params[:id])
-    @questions = ProfileQuestion.active
-  end
-
-  def new
-    if current_villager.profile
-      redirect_to edit_profile_path
-    else
-      @profile = current_villager.build_profile
-      @profile.suggest_name_from_villager!
-    end
-  end
-
-  def create
-    @profile = current_villager.build_profile
-    @profile.suggest_name_from_villager!
-
-    if @profile.save
-      redirect_to edit_profile_path
-    else
-      render :new, status: :unprocessable_entity
-    end
   end
 
   def edit
-    @profile = current_villager.profile
-    redirect_to(new_profile_path) and return unless @profile
+    @profile = current_villager.profile || begin
+      p = current_villager.build_profile
+      p.suggest_name_from_villager!
+      p.save!
+      p
+    end
 
     @questions = ProfileQuestion.active
-    ensure_answer_records if @profile.photo.attached?
+    ensure_answer_records if @profile.reference_photo.attached?
     @phase = @profile.current_phase(@questions)
   end
 
@@ -45,8 +28,8 @@ class ProfilesController < ApplicationController
     @profile = current_villager.profile
     @questions = ProfileQuestion.active
 
-    if params.dig(:profile, :photo).present?
-      update_phase(photo_params, :photo)
+    if params.dig(:profile, :reference_photo).present?
+      update_phase(reference_photo_params, :photo)
     else
       update_phase(finalize_params, @profile.current_phase(@questions))
     end
@@ -71,8 +54,8 @@ class ProfilesController < ApplicationController
     @profile.profile_answers.reload
   end
 
-  def photo_params
-    params.require(:profile).permit(:photo)
+  def reference_photo_params
+    params.require(:profile).permit(:reference_photo)
   end
 
   def finalize_params

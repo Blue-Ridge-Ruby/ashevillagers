@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_24_055649) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_26_002004) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -51,6 +51,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_24_055649) do
     t.string "animal"
     t.datetime "created_at", null: false
     t.boolean "cursed", default: false, null: false
+    t.string "hue"
     t.integer "profile_answer_id", null: false
     t.text "prompt"
     t.datetime "updated_at", null: false

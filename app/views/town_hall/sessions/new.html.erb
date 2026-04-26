@@ -4,12 +4,12 @@
   <%= form_with url: town_hall_session_path, method: :post, class: "space-y-4" do |f| %>
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Email</legend>
-      <%= f.email_field :email, autofocus: true, autocomplete: "email", required: true, class: "input" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", required: true, class: "input w-full" %>
     </fieldset>
 
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Password</legend>
-      <%= f.password_field :password, autocomplete: "current-password", required: true, class: "input" %>
+      <%= f.password_field :password, autocomplete: "current-password", required: true, class: "input w-full" %>
     </fieldset>
 
     <%= f.submit "Sign in", class: "btn w-full bg-indigo-600 text-white hover:bg-indigo-700" %>

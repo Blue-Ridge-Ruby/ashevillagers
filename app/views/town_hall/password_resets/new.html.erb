@@ -6,7 +6,7 @@
   <%= form_with url: town_hall_password_reset_path, method: :post, class: "space-y-4" do |f| %>
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Email</legend>
-      <%= f.email_field :email, autofocus: true, required: true, class: "input" %>
+      <%= f.email_field :email, autofocus: true, required: true, class: "input w-full" %>
     </fieldset>
 
     <%= f.submit "Send reset link", class: "btn w-full bg-indigo-600 text-white hover:bg-indigo-700" %>

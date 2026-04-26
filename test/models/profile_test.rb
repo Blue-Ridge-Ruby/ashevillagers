@@ -30,9 +30,9 @@ class ProfileTest < ActiveSupport::TestCase
     assert profile.errors[:last_name].any?
   end
 
-  test "answer_for returns the answer for a given question" do
+  test "answer_for returns the profile_answer for a given question" do
     profile = profiles(:one)
-    assert_equal "Mountain biking", profile.answer_for(profile_questions(:sport))
+    assert_equal "Mountain biking", profile.answer_for(profile_questions(:sport)).answer
   end
 
   test "answer_for returns nil when no answer exists" do
@@ -123,7 +123,7 @@ class ProfileTest < ActiveSupport::TestCase
   private
 
   def attach_test_photo(profile)
-    profile.photo.attach(
+    profile.reference_photo.attach(
       io: File.open(Rails.root.join("test/fixtures/files/test.png")),
       filename: "test.png",
       content_type: "image/png"

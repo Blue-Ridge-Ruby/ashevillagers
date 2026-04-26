@@ -256,11 +256,19 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.2-x86_64-linux-musl)
       racc (~> 1.4)
+    okmain (0.2.1)
+      ruby-vips (~> 2.1)
     ostruct (0.6.3)
+    ox (2.14.25)
+      bigdecimal (>= 3.0)
     parallel (1.27.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
+    phosphor_icons (0.3.0)
+      actionview
+      ox (~> 2.14)
+      railties
     postmark (1.25.1)
       json
     postmark-rails (0.22.1)
@@ -474,6 +482,8 @@ DEPENDENCIES
   kamal
   letter_opener
   mission_control-jobs
+  okmain (~> 0.2.1)
+  phosphor_icons (~> 0.3.0)
   postmark-rails
   propshaft
   puma (>= 5.0)

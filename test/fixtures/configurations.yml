@@ -9,3 +9,23 @@ api_key:
 max_attendees:
   name: max_attendees
   value: "500"
+
+animals_popular:
+  name: animals_popular
+  value: "fox,bear"
+
+animals_other:
+  name: animals_other
+  value: "owl,raccoon"
+
+prompt_for_image_generation:
+  name: prompt_for_image_generation
+  value: "%{animal} as %{job}"
+
+model_for_image_generation:
+  name: model_for_image_generation
+  value: "stub-model"
+
+model_for_job_title:
+  name: model_for_job_title
+  value: "stub-model"

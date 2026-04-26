@@ -34,7 +34,7 @@
             <% if current_villager.profile %>
               <%= link_to "Manage", edit_profile_path, class: "border border-white rounded px-4 py-1.5 font-medium hover:bg-white/10 transition" %>
             <% else %>
-              <%= link_to "Create Profile", new_profile_path, class: "border border-white rounded px-4 py-1.5 font-medium hover:bg-white/10 transition" %>
+              <%= link_to "Create Profile", edit_profile_path, class: "border border-white rounded px-4 py-1.5 font-medium hover:bg-white/10 transition" %>
             <% end %>
           <% else %>
             <%= link_to "Login", new_session_path, class: "border border-white rounded px-4 py-1.5 font-medium hover:bg-white/10 transition" %>

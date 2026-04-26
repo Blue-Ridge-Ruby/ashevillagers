@@ -24,12 +24,26 @@ class ImageGeneration < ApplicationRecord
 
   lazy_attribute :hue, -> {
     return unless image.present?
-    best_rgb = Okmain.colors(raw_image_path) # extract main colors as rgb triples
-      .max_by { Okmain::Oklab.srgb8_to_oklch(*it)[1] } # pick the highest-chroma one
-    best_oklab = Okmain::Oklab.srgb8_to_oklab(*best_rgb)
-    TailwindColor.bolds(600)
-      .min_by { distance_3d_sq(best_oklab, it.oklab) }
-      .hue
+    # Utimately we will select a Tailwind hue, returning the name (e.g., "orange")
+    targets = TailwindColor.bolds(600)
+    # Extract main colors as rgb triples. Okmain sorts (descending) by a combination of
+    # chroma and the color's prominence in the image.
+    main_rgbs = Okmain.colors(raw_image_path)
+    main_oklchs = main_rgbs.map { Okmain::Oklab.srgb8_to_oklch(*it) }
+    # With this style of image, okmain colors almost always include an off-white and a dark
+    # grayish. We exclude those with a chroma threshold and a lightness range.
+    bold_oklchs = main_oklchs.select { it[1] > 0.02 && (0.4..0.9).cover?(it[0]) }
+    # Map the remaining colors to the nearest (by hue angle) Tailwind hue.
+    nearest_hues = bold_oklchs.map do |oklch|
+      targets.min_by do |t|
+        a = (t.oklch[2] - oklch[2]).abs
+        (a > 180) ? 360 - a : a
+      end.hue
+    end
+    # yellow-600 just isn't pretty, and yellow-ish is too common a main color with all the
+    # light brown fur in these designs. If an image actually is dominated by yellow/brown,
+    # sky should look complimentary.
+    nearest_hues.find { it != "yellow" } || "sky"
   }
 
   def title = "#{animal} #{job}"
@@ -66,8 +80,4 @@ class ImageGeneration < ApplicationRecord
     popular = animals_popular.split(",")
     [*other, *(popular * [(other.size / popular.size), 1].max)]
   end
-
-  private
-
-  def distance_3d_sq(a, b) = (a[0] - b[0])**2 + (a[1] - b[1])**2 + (a[2] - b[2])**2
 end

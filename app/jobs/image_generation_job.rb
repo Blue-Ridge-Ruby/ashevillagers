@@ -3,6 +3,7 @@ class ImageGenerationJob < ApplicationJob
 
   def perform(image_generation)
     image_generation.ensure_image!
+    image_generation.ensure_cropped!
     image_generation.broadcast_replace_to(
       image_generation.profile,
       target: ActionView::RecordIdentifier.dom_id(image_generation),

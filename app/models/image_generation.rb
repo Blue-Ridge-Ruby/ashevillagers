@@ -8,6 +8,9 @@ class ImageGeneration < ApplicationRecord
   has_one :profile, through: :profile_answer
 
   has_one_attached :image
+  has_one_attached :cropped do |attachable|
+    attachable.variant :card, resize_to_limit: [600, 1000], format: :webp, saver: {quality: 90, smart_subsample: true}
+  end
   has_one_attached :generated_from
 
   before_save :ensure_animal
@@ -51,33 +54,65 @@ class ImageGeneration < ApplicationRecord
   def color = (TailwindColor[hue] || TailwindColor.sky).at(600)
 
   def ensure_image!
-    return image if image.present?
+    return image if image.attached?
     raise "Missing source photo" unless source_photo.present?
     raise "Missing prompt_for_image_generation configuration" unless prompt.present?
     painted = Configured.RubyLLM.paint(prompt, model:, with: source_photo.blob)
     @painted = painted if Rails.env.local? # for inspection in dev console
     generated_from.attach(source_photo.blob)
+    _, extension = painted.mime_type.split(/^image\//)
     image.attach(
       io: StringIO.new(painted.to_blob),
-      filename: "profile.png",
+      filename: "original.#{extension || "png"}",
       content_type: painted.mime_type,
+      identify: !extension
+    )
+  end
+
+  def ensure_cropped!
+    return cropped if cropped.attached?
+    raise "Missing image" unless image.attached?
+    cropped.attach(
+      io: self.class.crop_to_figure(image.blob),
+      filename: "cropped.png",
+      content_type: "image/png",
       identify: false
     )
   end
 
   if Rails.env.development?
-    def preview!
-      raise "Missing image" unless image.blob.present?
-      system("open", "-a", "Preview", raw_image_path)
+    def preview!(attachment = :image, variant = :blob)
+      raise "Missing attachment #{attachment}" unless send(attachment).send(variant).present?
+      system("open", "-a", "Preview", raw_image_path(attachment, variant))
     end
   end
 
   # WARNING: Depends on us continuing to use config.active_storage.service = :local
-  def raw_image_path = image.blob.service.path_for(image.blob.key)
+  def raw_image_path(attachment = :image, variant = :blob)
+    blob = send(attachment).send(variant)
+    blob.service.path_for(blob.key)
+  end
 
   def self.animals
-    other = animals_other.split(",")
-    popular = animals_popular.split(",")
+    other = animals_other.split(/,\s*/)
+    popular = animals_popular.split(/,\s*/)
     [*other, *(popular * [(other.size / popular.size), 1].max)]
+  end
+
+  # Returns a StringIO of the cropped PNG bytes
+  def self.crop_to_figure(blob, margin: 12, threshold: 5, background: nil)
+    source = Vips::Image.new_from_file(blob.service.path_for(blob.key))
+    source = source.flatten(background: background || [255, 255, 255]) if source.has_alpha?
+
+    left, top, w, h = source.find_trim(threshold: threshold, background: background)
+
+    # Expand by margin and clamp to image bounds.
+    x = [left - margin, 0].max
+    y = [top - margin, 0].max
+    right = [left + w + margin, source.width].min
+    bottom = [top + h + margin, source.height].min
+
+    cropped = source.crop(x, y, right - x, bottom - y)
+    StringIO.new(cropped.write_to_buffer(".png"))
   end
 end

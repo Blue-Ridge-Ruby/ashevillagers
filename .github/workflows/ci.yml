@@ -77,7 +77,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /opt/vips
-          key: libvips-8.16.1-${{ runner.os }}
+          key: libvips-8.18.2-${{ runner.os }}
 
       - name: Install libvips build deps
         run: |
@@ -90,7 +90,7 @@ jobs:
       - name: Build libvips
         if: steps.cache-libvips.outputs.cache-hit != 'true'
         run: |
-          VIPS_VERSION=8.16.1
+          VIPS_VERSION=8.18.2
           curl -L https://github.com/libvips/libvips/releases/download/v${VIPS_VERSION}/vips-${VIPS_VERSION}.tar.xz | tar xJ
           cd vips-${VIPS_VERSION}
           meson setup build --buildtype=release --prefix=/opt/vips
@@ -148,7 +148,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /opt/vips
-          key: libvips-8.16.1-${{ runner.os }}
+          key: libvips-8.18.2-${{ runner.os }}
 
       - name: Install libvips build deps
         run: |
@@ -161,7 +161,7 @@ jobs:
       - name: Build libvips
         if: steps.cache-libvips.outputs.cache-hit != 'true'
         run: |
-          VIPS_VERSION=8.16.1
+          VIPS_VERSION=8.18.2
           curl -L https://github.com/libvips/libvips/releases/download/v${VIPS_VERSION}/vips-${VIPS_VERSION}.tar.xz | tar xJ
           cd vips-${VIPS_VERSION}
           meson setup build --buildtype=release --prefix=/opt/vips

@@ -10,10 +10,13 @@
       Pick one of your generated portraits, then fill in your name and any links you'd like to share.
     </p>
   </div>
-  <div>
+  <div class="relative">
     <h3 class="text-sm font-bold text-gray-900 mb-2">Choose Your Portrait</h3>
     <% if profile.image_generations.any? %>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="
+        grid grid-cols-2 gap-3 lg:relative lg:grid-cols-4 lg:left-1/2 lg:-translate-x-1/2 lg:w-6xl lg:max-w-4xl xl:max-w-6xl
+        has-checked:[&>div:not(:has(:checked))]:opacity-50
+      ">
         <% profile.image_generations.includes(image_attachment: :blob).each do |ig| %>
           <%= render "image_generation", image_generation: ig, selected_id: profile.selected_image_generation_id %>
         <% end %>
@@ -25,14 +28,14 @@
 
   <div>
     <h3 class="text-sm font-bold text-gray-900 mb-2">Your Name (for public display)</h3>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <fieldset class="fieldset">
         <legend class="fieldset-legend">First Name</legend>
-        <%= f.text_field :first_name, required: true, class: "input" %>
+        <%= f.text_field :first_name, required: true, class: "input w-full" %>
       </fieldset>
       <fieldset class="fieldset">
         <legend class="fieldset-legend">Last Name</legend>
-        <%= f.text_field :last_name, required: true, class: "input" %>
+        <%= f.text_field :last_name, required: true, class: "input w-full" %>
       </fieldset>
     </div>
   </div>
@@ -40,7 +43,7 @@
   <div>
     <h3 class="text-sm font-bold text-gray-900 mb-1">Sharing Links</h3>
     <p class="text-sm text-gray-500 mb-3">Any links you'd like to share on the <%= link_to "Ashevillagers", root_path, class: "underline" %> page.</p>
-    <div class="space-y-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <% [
         [:twitter_url, "X/Twitter", "https://x.com/yourhandle"],
         [:bluesky_url, "Bluesky", "https://bsky.app/profile/yourhandle"],
@@ -50,7 +53,7 @@
       ].each do |attr, label, placeholder| %>
         <fieldset class="fieldset">
           <legend class="fieldset-legend"><%= label %></legend>
-          <%= f.url_field attr, placeholder: placeholder, class: "input" %>
+          <%= f.url_field attr, placeholder: placeholder, class: "input w-full" %>
         </fieldset>
       <% end %>
     </div>

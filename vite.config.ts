@@ -9,4 +9,16 @@ export default defineConfig({
     svelte(),
     tailwindcss(),
   ],
+  server: {
+    watch: {
+      ignored: [
+        '**/tmp/**',
+        '**/log/**',
+        '**/storage/**',
+        '**/.git/**',
+        '**/public/vite/**',
+        '**/node_modules/.vite/**'
+      ]
+    }
+  }
 })

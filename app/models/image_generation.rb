@@ -104,15 +104,18 @@ class ImageGeneration < ApplicationRecord
     source = Vips::Image.new_from_file(blob.service.path_for(blob.key))
     source = source.flatten(background: background || [255, 255, 255]) if source.has_alpha?
 
-    left, top, w, h = source.find_trim(threshold: threshold, background: background)
+    left, top, width, height = source.find_trim(threshold: threshold, background: background)
+    # Image generation usually visually centers the image even when it's unbalanced,
+    # so apply margins and mirror left and right crop.
+    right = (source.width - width - left - margin).clamp(0..)
+    left = (left - margin).clamp(0..)
+    left, width = (right > left) ? [left, source.width - left * 2] : [right, source.width - right * 2]
+    # We don't care vertical centering, so just apply margins
+    bottom = (source.height - height - top - margin).clamp(0..)
+    top = (top - margin).clamp(0..)
+    height = source.height - top - bottom
 
-    # Expand by margin and clamp to image bounds.
-    x = [left - margin, 0].max
-    y = [top - margin, 0].max
-    right = [left + w + margin, source.width].min
-    bottom = [top + h + margin, source.height].min
-
-    cropped = source.crop(x, y, right - x, bottom - y)
+    cropped = source.crop(left, top, width, height)
     StringIO.new(cropped.write_to_buffer(".png"))
   end
 end

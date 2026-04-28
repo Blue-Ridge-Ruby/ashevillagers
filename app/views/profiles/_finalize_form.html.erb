@@ -1,0 +1,52 @@
+<%= form_with model: profile, url: profile_path, method: :patch, class: "space-y-8 mt-8" do |f| %>
+  <div class="relative">
+    <h3 class="text-sm font-bold text-gray-900 mb-4">Choose Your Portrait</h3>
+    <% if profile.image_generations.any? %>
+      <div class="
+        grid grid-cols-2 gap-3 lg:relative lg:grid-cols-4 lg:left-1/2 lg:-translate-x-1/2 lg:w-7xl lg:max-w-4xl xl:max-w-6xl 2xl:max-w-7xl
+        has-checked:[&>div:not(:has(:checked))]:opacity-50
+      ">
+        <% profile.image_generations.includes(image_attachment: :blob).each do |ig| %>
+          <%= render "image_generation", image_generation: ig, selected_id: profile.selected_image_generation_id %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-500">No portraits yet.</p>
+    <% end %>
+  </div>
+
+  <div>
+    <h3 class="text-sm font-bold text-gray-900 mb-2">Your Name (for public display)</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">First Name</legend>
+        <%= f.text_field :first_name, required: true, class: "input w-full" %>
+      </fieldset>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">Last Name</legend>
+        <%= f.text_field :last_name, required: true, class: "input w-full" %>
+      </fieldset>
+    </div>
+  </div>
+
+  <div>
+    <h3 class="text-sm font-bold text-gray-900 mb-1">Sharing Links</h3>
+    <p class="text-sm text-gray-500 mb-3">Any links you'd like to share on the <%= link_to "Ashevillagers", root_path, class: "underline" %> page.</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <% [
+        [:twitter_url, "X/Twitter", "https://x.com/yourhandle"],
+        [:bluesky_url, "Bluesky", "https://bsky.app/profile/yourhandle"],
+        [:mastodon_url, "Mastodon", "https://ruby.social/@yourhandle"],
+        [:linkedin_url, "LinkedIn", "https://www.linkedin.com/in/yourhandle/"],
+        [:website_url, "Website or Blog", "https://yoursite.com"],
+      ].each do |attr, label, placeholder| %>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend"><%= label %></legend>
+          <%= f.url_field attr, placeholder: placeholder, class: "input w-full" %>
+        </fieldset>
+      <% end %>
+    </div>
+  </div>
+
+  <%= f.submit submit_label, class: "btn bg-[#2672B5] text-white hover:bg-[#3a6291]" %>
+<% end %>

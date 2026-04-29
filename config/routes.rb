@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   mount MissionControl::Jobs::Engine, at: "/town_hall/jobs"
 
   namespace :town_hall do
+    root to: redirect("/town_hall/villagers")
     resource :session, only: %i[new create destroy]
     resource :password_reset, only: %i[new create edit update]
     resources :stewards, only: %i[index new create destroy]

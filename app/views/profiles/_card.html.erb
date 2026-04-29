@@ -3,7 +3,7 @@ ig = profile.selected_image_generation
 frame_color = ig&.color&.oklch_css || TailwindColor.mist(600).oklch_css
 name = [profile.first_name, profile.last_name].compact_blank.join(" ")
 %>
-<div style="--frame-color: <%= frame_color %>" class="block rounded-lg overflow-hidden shadow-md hover:shadow-lg transition bg-(--frame-color) text-white">
+<div id="<%= dom_id(profile) %>" style="--frame-color: <%= frame_color %>" class="block rounded-lg overflow-hidden shadow-md hover:shadow-lg transition bg-(--frame-color) text-white">
   <%= link_to public_profile_path(profile), class: "relative block aspect-square bg-white text-(--frame-color)" do %>
     <svg xmlns="http://www.w3.org/2000/svg" width="290" height="290" fill="none" class="absolute left-0 top-0 w-full h-full z-10 pointer-events-none text-(--frame-color)" viewBox="0 0 290 290"><use href="#frame_square"/></svg>
     <div class="absolute left-[7%] top-[7%] w-[86%] h-[88%] z-0">
@@ -17,7 +17,7 @@ name = [profile.first_name, profile.last_name].compact_blank.join(" ")
       </div>
     </div>
   <% end %>
-  <div class="flex items-center gap-3 pt-2 pb-3 px-[6.5%]">
+  <div class="flex items-center gap-3 pt-1.5 pb-4 px-[6.5%]">
     <% if profile.show_photo && profile.reference_photo.attached? %>
       <%= image_tag profile.reference_photo.variant(resize_to_fill: [96, 96]), class: "w-14 h-14 rounded-full object-cover ring-2 ring-white shrink-0", alt: "" %>
     <% end %>

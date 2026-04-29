@@ -6,7 +6,7 @@
       <div class="font-bold text-green-900">Your profile is live.</div>
       <div class="text-sm text-green-800">You can keep refining it below.</div>
     </div>
-    <%= link_to "View public profile", public_profile_path(profile), class: "btn btn-sm bg-white border border-green-300 text-green-900" %>
+    <%= link_to "View public profile", "#{root_path}##{dom_id(profile)}", class: "btn btn-sm bg-white border border-green-300 text-green-900" %>
   </div>
 </div>
 

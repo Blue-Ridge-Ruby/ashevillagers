@@ -19,7 +19,9 @@ class Profile < ApplicationRecord
   belongs_to :villager
   belongs_to :selected_image_generation, class_name: "ImageGeneration", optional: true
 
-  has_one_attached :reference_photo
+  has_one_attached :reference_photo do |attachable|
+    attachable.variant :llm, resize_to_limit: [1024, 1024], format: :jpeg
+  end
   has_many :profile_answers, dependent: :destroy
   has_many :image_generations, through: :profile_answers
   accepts_nested_attributes_for :profile_answers

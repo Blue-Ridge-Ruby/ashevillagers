@@ -73,7 +73,7 @@ class ImageGeneration < ApplicationRecord
 
   def generate_image
     raise "Missing source photo" unless source_photo.present?
-    painted = Configured.RubyLLM.paint(prompt, model:, with: source_photo.blob)
+    painted = Configured.RubyLLM.paint(prompt, model:, with: source_photo.variant(:llm).blob)
     @painted = painted if Rails.env.local? # for inspection in dev console
     painted
   end

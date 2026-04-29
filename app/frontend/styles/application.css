@@ -1,8 +1,44 @@
 @import "tailwindcss";
 @source "../../views";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: light --default;
+}
 
 @theme {
   --font-sans: "Inter", sans-serif;
   --font-serif: "IM Fell DW Pica", serif;
+}
+
+@utility av-alert {
+  @apply text-gray-600 bg-gray-100 text-sm font-medium rounded-lg p-2 flex gap-2;
+  @apply has-[svg]:pr-4;
+  @apply has-[svg]:pt-2.5 [&_svg]:-mt-0.5; /* adjustments for (default) 24px icon */
+  @apply has-[svg.h-8]:pt-3.5 [&_svg.h-8]:-mt-1.5; /* adjustments for (hypothetical) 32px icon */
+  @apply has-[svg.h-4]:pt-2 [&_svg.h-4]:mt-0; /* adjustments for (hypothetical) 16px icon */
+  & > svg {
+    @apply shrink-0;
+    &:not([class*=h-], [class*=w-]) {
+      @apply h-6 w-6; /* apply default h-6 w-6 to icons without size classes */
+    }
+  }
+}
+
+@utility av-alert-info {
+  @apply text-sky-700 bg-sky-100;
+}
+
+@utility av-alert-warning {
+  @apply text-orange-800 bg-orange-200;
+}
+
+@utility av-alert-error {
+  @apply text-red-800 bg-red-200;
+}
+
+@utility av-pill {
+  @apply text-gray-600 bg-gray-100 text-sm font-medium rounded-full py-1.5 px-3 flex gap-2;
+}
+
+@utility av-pill-info {
+  @apply text-sky-700 bg-sky-100;
 }

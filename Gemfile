@@ -10,6 +10,8 @@ gem "puma", ">= 5.0"
 gem "jbuilder"
 # Use Vite for asset bundling [https://vite-ruby.netlify.app/]
 gem "vite_rails"
+# Hotwire Turbo (Turbo Streams for live profile image updates)
+gem "turbo-rails"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
@@ -77,3 +79,7 @@ end
 
 # .paint(with:) support comes in 1.15, not yet released as of now. Pinned at a known-working commit on main.
 gem "ruby_llm", github: "crmne/ruby_llm", ref: "4371a1b250a2960d8891548e9fb4633de39bcd40"
+
+gem "okmain", "~> 0.2.1"
+
+gem "phosphor_icons", "~> 0.3.0"

@@ -13,9 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
     <%= vite_client_tag %>
     <%= vite_javascript_tag 'application' %>
@@ -23,18 +23,16 @@
 
   <body class="bg-white min-h-screen font-sans">
     <nav class="bg-[#2672B5] text-white">
-      <div class="mx-auto px-4 py-3 flex items-center justify-between container">
-        <%= link_to root_path, class: "flex items-center gap-2" do %>
+      <div class="mx-auto px-4 py-3 flex items-center justify-between container gap-2">
+        <%= link_to root_path, class: "block relative -top-[1px]" do %>
           <img src="/images/brr-logo-border.svg" alt="Blue Ridge Ruby" class="h-10">
         <% end %>
 
-        <div class="flex items-center gap-6 text-base font-medium">
-          <span class="hidden sm:inline">April 30 &amp; May 1, 2026 &middot; <a href="https://blueridgeruby.com/#register" class="text-[#ADD6F2] underline">Register Now</a></span>
+        <div class="flex items-center gap-4 md:gap-6 text-base font-medium relative top-[1px]">
+          <span class="hidden sm:inline">April 30 &amp; May 1, 2026 &middot; <a href="https://blueridgeruby.com/#register" class="text-[#ADD6F2] underline text-nowrap">Register Now</a></span>
           <% if current_villager %>
-            <% if current_villager.profile %>
-              <%= link_to "Manage", edit_profile_path, class: "border border-white rounded px-4 py-1.5 font-medium hover:bg-white/10 transition" %>
-            <% else %>
-              <%= link_to "Create Profile", new_profile_path, class: "border border-white rounded px-4 py-1.5 font-medium hover:bg-white/10 transition" %>
+            <%= link_to edit_profile_path, class: "border border-white rounded px-3 py-1.5 font-medium hover:bg-white/10 transition whitespace-nowrap flex gap-1.5 items-center" do %>
+              <%= current_villager.profile&.finalized? ? "Update" : "Create" %> <%= phosphor_icon(:user, style: "bold", class: "inline w-5 h-5") %>
             <% end %>
           <% else %>
             <%= link_to "Login", new_session_path, class: "border border-white rounded px-4 py-1.5 font-medium hover:bg-white/10 transition" %>

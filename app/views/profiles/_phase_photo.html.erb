@@ -1,0 +1,28 @@
+<div class="space-y-8">
+  <p class="text-xl text-black font-serif">
+    Besides being home to Blue Ridge Ruby, Asheville, NC is a <i>busy town</i>, with all kinds of work and play going on. What sort of animal resident do you imagine you would be?
+  </p>
+
+  <%= form_with model: profile, url: profile_path, method: :patch, class: "space-y-4" do |f| %>
+    <div>
+      <h2 class="text-lg font-bold text-gray-900 mb-2 flex justify-between items-center">
+        Upload your profile photo
+        <span class="av-pill av-pill-info">Step 1 of 3</span>
+      </h2>
+      <p class="text-sm text-gray-600">
+        We'll use this photo as a reference for generating your Ashevillager portraits.
+        PNG, JPEG, or WebP, <nobr>under 5MB.</nobr>
+      </p>
+    </div>
+    <fieldset class="fieldset">
+      <%= f.file_field :reference_photo, accept: "image/png,image/jpeg,image/webp", required: true, title: "Reference photo", class: "file-input" %>
+    </fieldset>
+
+    <%= f.submit "Upload & Continue", class: "btn bg-[#2672B5] text-white hover:bg-[#3a6291]" %>
+  <% end %>
+
+  <p class="av-alert av-alert-info">
+    <%= phosphor_icon "detective", style: "fill" %>
+    We won't display this photo publicly unless you chose to later in the process. Note that conference staff and volunteers may still have access to the photo, and of course we send it to the LLM to make your Ashevillager.
+  </p>
+</div>

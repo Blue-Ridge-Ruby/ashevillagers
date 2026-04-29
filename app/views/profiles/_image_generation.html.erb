@@ -1,0 +1,28 @@
+<%
+ready, frame_color = if image_generation.cropped.attached?
+  [true, image_generation.color.oklch_css]
+else
+  [false, TailwindColor.mist(600).oklch_css]
+end
+%>
+<%= tag.div id: dom_id(image_generation), style: "--frame-color: #{frame_color}", class: "relative rounded overflow-hidden has-checked:outline-3 outline-offset-2 outline-(--frame-color) transition-opacity" do %>
+  <label class="block cursor-pointer aspect-square relative <%= "animate-pulse" unless ready %>">
+    <svg xmlns="http://www.w3.org/2000/svg" width="290" height="290" fill="none" class="absolute left-0 top-0 w-full h-full z-10 pointer-events-none text-(--frame-color)" viewBox="0 0 290 290"><use href="#frame_square"/></svg>
+    <div class="absolute left-[7%] top-[7%] w-[86%] h-[88%] z-0">
+      <div class="absolute aspect-square top-0 bottom-6 h-auto left-1/2 -translate-x-1/2">
+        <% if ready %>
+          <%= image_tag signed_blob_path(image_generation.cropped.variant(:card).processed), class: "absolute w-full h-full top-0 left-0 object-contain object-bottom", alt: image_generation.title %>
+        <% else %>
+          <div class="relative w-full h-full flex flex-col justify-center items-center">
+            <div class="text-sm text-gray-500">Generating…</div>
+            <div class="text-xs text-gray-400 mt-1">(~60s)</div>
+          </div>
+        <% end %>
+      </div>
+      <span class="sr-only"><%= radio_button_tag "profile[selected_image_generation_id]", image_generation.id, local_assigns[:selected_id] == image_generation.id, disabled: !ready %></span>
+      <div class="pb-1 absolute left-0 w-full bottom-0 text-center text-sm font-serif text-(--frame-color)">
+        <%= image_generation.job %>
+      </div>
+    </div>
+  </label>
+<% end %>

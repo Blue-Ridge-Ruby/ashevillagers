@@ -1,0 +1,13 @@
+<%= turbo_stream_from profile %>
+
+<div>
+  <h2 class="text-lg font-bold text-gray-900 mb-2 flex justify-between items-center">
+    Finish your profile
+    <span class="av-pill av-pill-info">Step 3 of 3</span>
+  </h2>
+  <p class="text-sm text-gray-600">
+    Pick one of your generated portraits, then fill in your name and any links you'd like to share.
+  </p>
+</div>
+
+<%= render "finalize_form", profile: profile, submit_label: "Save Profile" %>

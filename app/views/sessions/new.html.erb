@@ -5,7 +5,7 @@
   <%= form_with url: session_path, method: :post, class: "space-y-4" do |f| %>
     <fieldset class="fieldset">
       <legend class="fieldset-legend">Email address</legend>
-      <%= f.email_field :email, required: true, autofocus: true, class: "input" %>
+      <%= f.email_field :email, required: true, autofocus: true, class: "input w-full" %>
     </fieldset>
 
     <%= f.submit "Send login link", class: "btn w-full bg-[#2672B5] text-white hover:bg-[#3a6291]" %>

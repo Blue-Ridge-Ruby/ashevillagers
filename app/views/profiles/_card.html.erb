@@ -1,22 +1,33 @@
-<%= link_to public_profile_path(profile), class: "block rounded-lg shadow-md overflow-hidden hover:shadow-lg transition text-left" do %>
-  <div class="bg-gray-100 aspect-square flex items-center justify-center">
-    <% if profile.photo.attached? %>
-      <%= image_tag profile.photo.variant(resize_to_fill: [400, 400]), class: "w-full h-full object-cover", alt: profile.first_name %>
-    <% else %>
-      <div class="text-gray-400 text-6xl">
-        <svg class="w-20 h-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+<%
+ig = profile.selected_image_generation
+frame_color = ig&.color&.oklch_css || TailwindColor.mist(600).oklch_css
+name = [profile.first_name, profile.last_name].compact_blank.join(" ")
+%>
+<div style="--frame-color: <%= frame_color %>" class="block rounded-lg overflow-hidden shadow-md hover:shadow-lg transition bg-(--frame-color) text-white">
+  <%= link_to public_profile_path(profile), class: "relative block aspect-square bg-white text-(--frame-color)" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" width="290" height="290" fill="none" class="absolute left-0 top-0 w-full h-full z-10 pointer-events-none text-(--frame-color)" viewBox="0 0 290 290"><use href="#frame_square"/></svg>
+    <div class="absolute left-[7%] top-[7%] w-[86%] h-[88%] z-0">
+      <div class="absolute aspect-square top-2 bottom-10 h-auto left-1/2 -translate-x-1/2">
+        <% if ig&.cropped&.attached? %>
+          <%= image_tag signed_blob_path(ig.cropped.variant(:card).processed), class: "absolute w-full h-full top-0 left-0 object-contain object-bottom", alt: ig.title %>
+        <% end %>
       </div>
-    <% end %>
-  </div>
-  <div class="p-3">
-    <p class="font-semibold text-gray-900"><%= profile.first_name %> <%= profile.last_name %></p>
-    <% if profile.has_social_links? %>
-      <div class="flex gap-2 mt-1 text-gray-500">
-        <%= social_icon("twitter", profile.twitter_url) %>
-        <%= social_icon("bluesky", profile.bluesky_url) %>
-        <%= social_icon("mastodon", profile.mastodon_url) %>
-        <%= social_icon("linkedin", profile.linkedin_url) %>
+      <div class="pb-2 absolute left-0 w-full bottom-0 text-center text-xl font-serif">
+        <%= ig&.job %>
       </div>
+    </div>
+  <% end %>
+  <div class="flex items-center gap-3 pt-2 pb-3 px-[6.5%]">
+    <% if profile.show_photo && profile.reference_photo.attached? %>
+      <%= image_tag profile.reference_photo.variant(resize_to_fill: [96, 96]), class: "w-14 h-14 rounded-full object-cover ring-2 ring-white shrink-0", alt: "" %>
     <% end %>
+    <div class="min-w-0">
+      <p class="font-medium text-xl leading-tight truncate"><%= name %></p>
+      <div class="flex gap-1 mt-0.5">
+        <% profile.social_links.each do |link, href| %>
+          <%= link_to(href, title: link.label, target: "_blank", class: "text-white opacity-80 hover:opacity-100") { phosphor_icon(*link.icon(class: "w-5 h-5")) } %>
+        <% end %>
+      </div>
+    </div>
   </div>
-<% end %>
+</div>

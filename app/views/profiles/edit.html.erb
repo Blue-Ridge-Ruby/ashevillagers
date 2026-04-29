@@ -1,5 +1,15 @@
-<div class="max-w-xl mx-auto px-4 py-12">
-  <h1 class="text-3xl font-serif text-[#C0392B] mb-8"><%= @profile.persisted? ? "Edit Your Profile" : "Create Your Profile" %></h1>
+<div class="max-w-3xl mx-auto px-4 py-8 sm:py-12">
+  <h1 class="text-3xl font-serif text-[#C0392B] mb-4">Create Your Ashevillager!</h1>
 
-  <%= render "form", profile: @profile, questions: @questions %>
+  <% if @profile.errors.any? %>
+    <div class="mb-6 p-3 rounded bg-red-100 text-red-800">
+      <ul>
+        <% @profile.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= render "profiles/phase_#{@phase}", profile: @profile, questions: @questions %>
 </div>

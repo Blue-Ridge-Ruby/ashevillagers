@@ -1,0 +1,44 @@
+<%
+  question = profile.next_unanswered_question(questions)
+  answer_record = profile.profile_answers.find_by(profile_question: question)
+  total = questions.size
+  current_index = questions.index(question) + 1
+  generation = profile.last_answer&.image_generation
+  verb, icon = [
+    ["Dreaming of", "moon-stars"],
+    ["Sketching", "pencil-ruler"],
+    ["Computing", "robot"]
+  ][(profile.id + current_index) % 3]
+%>
+
+<div class="space-y-8">
+  <% if generation %>
+    <p class="av-alert av-alert-info">
+      <%= phosphor_icon icon %> <%= verb %> <%= indefinite(generation.title) %>&hellip;
+    </p>
+  <% end %>
+  <%= form_with model: answer_record, url: profile_profile_answer_path(answer_record), method: :patch, scope: :profile_answer, class: "space-y-6" do |f| %>
+    <div>
+      <h2 class="text-lg font-bold text-gray-900 mb-2 flex justify-between items-center">
+        Question <%= current_index %> of <%= total %>
+        <span class="av-pill av-pill-info">Step 2 of 3</span>
+      </h2>
+      <p class="text-sm text-gray-600">
+        Your answer will be used to generate a portrait that captures something about your personality.
+      </p>
+    </div>
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend text-base"><%= question.question %></legend>
+      <%= f.text_field :answer, required: true, class: "input w-full", autofocus: true %>
+    </fieldset>
+
+    <%= f.submit "Save & Continue", class: "btn bg-[#2672B5] text-white hover:bg-[#3a6291]" %>
+  <% end %>
+
+  <% if current_index == 1 %>
+    <p class="av-alert av-alert-info">
+      <%= phosphor_icon "clock" %>
+      Generating each portrait takes about a minute. It will work in the background while you complete the questions.
+    </p>
+  <% end %>
+</div>

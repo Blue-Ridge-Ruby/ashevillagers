@@ -1,0 +1,32 @@
+{
+  "exclude": [
+    "./node_modules/",
+    "./tmp/",
+    "./public/vite-test/",
+    "./public/vite-dev/",
+    "./vendor/"
+  ],
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "es2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    /**
+      Svelte Preprocess cannot figure out whether you have a value or a type, so tell TypeScript
+      to enforce using `import type` instead of `import` for Types.
+     */
+    "verbatimModuleSyntax": true,
+    /**
+      To have warnings/errors of the Svelte compiler at the correct position,
+      enable source maps by default.
+     */
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    /**
+      useDefineForClassFields is necessary for $state rune to work in classes when target < es2022
+     */
+    "useDefineForClassFields": true,
+    "types": ["svelte", "vite/client"]
+  }
+}

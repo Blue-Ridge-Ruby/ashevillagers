@@ -72,6 +72,38 @@ jobs:
       - name: Install npm packages
         run: npm ci
 
+      - name: Cache libvips
+        id: cache-libvips
+        uses: actions/cache@v4
+        with:
+          path: /opt/vips
+          key: libvips-8.18.2-${{ runner.os }}
+
+      - name: Install libvips build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential meson ninja-build pkg-config \
+            libglib2.0-dev libexpat1-dev libjpeg-dev libpng-dev \
+            libtiff5-dev libwebp-dev libheif-dev libgif-dev libexif-dev
+
+      - name: Build libvips
+        if: steps.cache-libvips.outputs.cache-hit != 'true'
+        run: |
+          VIPS_VERSION=8.18.2
+          curl -L https://github.com/libvips/libvips/releases/download/v${VIPS_VERSION}/vips-${VIPS_VERSION}.tar.xz | tar xJ
+          cd vips-${VIPS_VERSION}
+          meson setup build --buildtype=release --prefix=/opt/vips
+          ninja -C build
+          sudo ninja -C build install
+
+      - name: Configure libvips
+        run: |
+          echo "/opt/vips/lib/x86_64-linux-gnu" | sudo tee /etc/ld.so.conf.d/vips.conf
+          sudo ldconfig
+          echo "PKG_CONFIG_PATH=/opt/vips/lib/x86_64-linux-gnu/pkgconfig" >> $GITHUB_ENV
+          echo "/opt/vips/bin" >> $GITHUB_PATH
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -110,6 +142,38 @@ jobs:
 
       - name: Install npm packages
         run: npm ci
+
+      - name: Cache libvips
+        id: cache-libvips
+        uses: actions/cache@v4
+        with:
+          path: /opt/vips
+          key: libvips-8.18.2-${{ runner.os }}
+
+      - name: Install libvips build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential meson ninja-build pkg-config \
+            libglib2.0-dev libexpat1-dev libjpeg-dev libpng-dev \
+            libtiff5-dev libwebp-dev libheif-dev libgif-dev libexif-dev
+
+      - name: Build libvips
+        if: steps.cache-libvips.outputs.cache-hit != 'true'
+        run: |
+          VIPS_VERSION=8.18.2
+          curl -L https://github.com/libvips/libvips/releases/download/v${VIPS_VERSION}/vips-${VIPS_VERSION}.tar.xz | tar xJ
+          cd vips-${VIPS_VERSION}
+          meson setup build --buildtype=release --prefix=/opt/vips
+          ninja -C build
+          sudo ninja -C build install
+
+      - name: Configure libvips
+        run: |
+          echo "/opt/vips/lib/x86_64-linux-gnu" | sudo tee /etc/ld.so.conf.d/vips.conf
+          sudo ldconfig
+          echo "PKG_CONFIG_PATH=/opt/vips/lib/x86_64-linux-gnu/pkgconfig" >> $GITHUB_ENV
+          echo "/opt/vips/bin" >> $GITHUB_PATH
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1

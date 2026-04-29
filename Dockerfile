@@ -9,16 +9,40 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=4.0.1
+ARG VIPS_VERSION=8.18.2
+
+# Build libvips from source — Debian's libvips is too old (no oklab colourspace before 8.17)
+FROM docker.io/library/ruby:$RUBY_VERSION-slim AS vips-build
+ARG VIPS_VERSION
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+      build-essential curl xz-utils meson ninja-build pkg-config \
+      libglib2.0-dev libexpat1-dev libjpeg-dev libpng-dev \
+      libtiff-dev libwebp-dev libheif-dev libgif-dev libexif-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    curl -fsSL https://github.com/libvips/libvips/releases/download/v${VIPS_VERSION}/vips-${VIPS_VERSION}.tar.xz | tar xJ -C /tmp && \
+    cd /tmp/vips-${VIPS_VERSION} && \
+    meson setup build --buildtype=release --prefix=/opt/vips --libdir=lib && \
+    ninja -C build && \
+    ninja -C build install
+
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
 # Rails app lives here
 WORKDIR /rails
 
-# Install base packages
+# Install base packages — libvips from apt is included to pull in runtime deps
+# (libglib, libjpeg, libpng, etc.) for our overlaid newer libvips below.
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl gosu libjemalloc2 libvips sqlite3 && \
     ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Overlay newer libvips. /opt/vips/lib is added before /usr/lib via ldconfig,
+# so ruby-vips's dlopen("libvips.so.42") finds this build first.
+COPY --from=vips-build /opt/vips /opt/vips
+RUN echo "/opt/vips/lib" > /etc/ld.so.conf.d/vips.conf && ldconfig
+ENV PATH="/opt/vips/bin:${PATH}"
 
 # Set production environment variables and enable jemalloc for reduced memory usage and latency.
 ENV RAILS_ENV="production" \

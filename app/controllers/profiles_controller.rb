@@ -1,68 +1,65 @@
 class ProfilesController < ApplicationController
-  before_action :authenticate_villager!, only: %i[new create edit update]
+  before_action :authenticate_villager!, only: %i[edit update]
 
   def index
-    @profiles = Profile.includes(:villager, :profile_answers, photo_attachment: :blob)
-      .where.not(first_name: [nil, ""])
+    @profiles = Profile
+      .finalized
+      .includes(selected_image_generation: :cropped_attachment)
       .order(:last_name, :first_name)
   end
 
   def show
-    @profile = Profile.includes(profile_answers: :profile_question).find(params[:id])
-    @questions = ProfileQuestion.active
-  end
-
-  def new
-    if current_villager.profile
-      redirect_to edit_profile_path
-    else
-      @profile = current_villager.build_profile
-      @profile.suggest_name_from_villager!
-      prepare_form
-    end
-  end
-
-  def create
-    @profile = current_villager.build_profile(profile_params)
-
-    if @profile.save
-      redirect_to edit_profile_path, notice: "Profile created."
-    else
-      prepare_form
-      render :new, status: :unprocessable_entity
-    end
+    @profile = Profile.find(params[:id])
   end
 
   def edit
-    @profile = current_villager.profile || current_villager.build_profile
-    @profile.suggest_name_from_villager! if @profile.new_record?
-    prepare_form
+    @profile = current_villager.profile || begin
+      p = current_villager.build_profile
+      p.suggest_name_from_villager!
+      p.save!
+      p
+    end
+
+    @questions = ProfileQuestion.active
+    ensure_answer_records if @profile.reference_photo.attached?
+    @phase = @profile.current_phase(@questions)
   end
 
   def update
-    @profile = current_villager.profile || current_villager.build_profile
+    @profile = current_villager.profile
+    @questions = ProfileQuestion.active
 
-    if @profile.update(profile_params)
-      redirect_to edit_profile_path, notice: "Profile updated."
+    if params.dig(:profile, :reference_photo).present?
+      update_phase(reference_photo_params, :photo)
     else
-      prepare_form
-      render :edit, status: :unprocessable_entity
+      update_phase(finalize_params, @profile.current_phase(@questions))
     end
   end
 
   private
 
-  def prepare_form
-    @questions = ProfileQuestion.active
-    @profile.ensure_answers_for(@questions)
+  def update_phase(attrs, phase_on_failure)
+    if @profile.update(attrs)
+      redirect_to edit_profile_path
+    else
+      @phase = phase_on_failure
+      render :edit, status: :unprocessable_entity
+    end
   end
 
-  def profile_params
-    params.require(:profile).permit(
-      :first_name, :last_name,
-      :twitter_url, :bluesky_url, :mastodon_url, :linkedin_url, :website_url,
-      :photo,
-      profile_answers_attributes: %i[id profile_question_id answer]
-    )
+  # Pre-persist ProfileAnswer rows for stable ids in the per-question form.
+  def ensure_answer_records
+    @questions.each do |q|
+      @profile.profile_answers.find_or_create_by(profile_question: q)
+    end
+    @profile.profile_answers.reload
+  end
+
+  def reference_photo_params
+    params.require(:profile).permit(:reference_photo)
+  end
+
+  def finalize_params
+    params.require(:profile).permit(:first_name, :last_name, :show_photo, :selected_image_generation_id, *Profile::SOCIAL_LINKS.map(&:attribute))
   end
 end

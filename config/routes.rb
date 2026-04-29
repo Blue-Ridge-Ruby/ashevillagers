@@ -14,7 +14,9 @@ Rails.application.routes.draw do
     get :callback, on: :collection
     post :callback, on: :collection
   end
-  resource :profile, only: %i[new create edit update], controller: "profiles"
+  resource :profile, only: %i[edit update], controller: "profiles" do
+    resources :profile_answers, only: %i[update], controller: "profile_answers"
+  end
   root "profiles#index"
 
   # Public profile page — must be after all other top-level routes
@@ -23,6 +25,7 @@ Rails.application.routes.draw do
   mount MissionControl::Jobs::Engine, at: "/town_hall/jobs"
 
   namespace :town_hall do
+    root to: redirect("/town_hall/villagers")
     resource :session, only: %i[new create destroy]
     resource :password_reset, only: %i[new create edit update]
     resources :stewards, only: %i[index new create destroy]

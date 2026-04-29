@@ -1,8 +1,12 @@
+<%
+ig = @profile.selected_image_generation
+ready = ig.cropped.attached?
+%>
 <div class="max-w-2xl mx-auto px-4 py-12">
-  <div class="flex items-start gap-8">
+  <div class="flex flex-col items-center sm:flex-row sm:items-start gap-8">
     <div class="shrink-0">
-      <% if @profile.selected_image_generation&.image&.attached? %>
-        <%= image_tag @profile.selected_image_generation.image.variant(resize_to_fill: [200, 200]), class: "w-32 h-32 rounded-full object-cover", alt: @profile.first_name %>
+      <% if ready %>
+        <%= image_tag ig.cropped.variant(:card), class: "w-64 h-80 object-contain", alt: ig.title %>
       <% else %>
         <div class="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
           <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
@@ -13,17 +17,11 @@
     <div>
       <h1 class="text-3xl font-serif text-[#C0392B]"><%= @profile.first_name %> <%= @profile.last_name %></h1>
 
-      <% if @profile.has_social_links? %>
-        <div class="flex gap-3 mt-2">
-          <% Profile::SOCIAL_LINKS.each do |attr| %>
-            <% if @profile[attr].present? %>
-              <%= link_to @profile[attr], target: "_blank", rel: "noopener", class: "text-gray-500 hover:text-[#2672B5]" do %>
-                <%= social_icon(attr.to_s.delete_suffix("_url"), @profile[attr]) %>
-              <% end %>
-            <% end %>
-          <% end %>
-        </div>
-      <% end %>
+      <div class="flex gap-3 mt-2 empty:hidden">
+        <% @profile.social_links.each do |link, href| %>
+          <%= link_to(href, title: link.label, target: "_blank", class: "text-[#2672B5] opacity-70 hover:opacity-100") { phosphor_icon(*link.icon(class: "w-4 h-4")) } %>
+        <% end %>
+      </div>
     </div>
   </div>
 

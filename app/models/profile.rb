@@ -1,6 +1,21 @@
 class Profile < ApplicationRecord
-  SOCIAL_LINKS = %i[twitter_url bluesky_url mastodon_url linkedin_url website_url].freeze
+  SocialLink = Data.define(:name, :icon_default, :label, :placeholder) do
+    def attribute = "#{name}_url"
 
+    def icon(attrs)
+      iname, iattrs = icon_default
+      [iname, {**iattrs, **attrs}]
+    end
+  end
+
+  SOCIAL_LINKS = [
+    SocialLink.new(:website, ["house", style: "fill"], "Website or Blog", "https://yoursite.com"),
+    SocialLink.new(:twitter, ["twitter-logo", style: "fill"], "X/Twitter", "https://x.com/yourhandle"),
+    SocialLink.new(:bluesky, ["butterfly", style: "fill"], "Bluesky", "https://bsky.app/profile/yourhandle"),
+    SocialLink.new(:mastodon, ["mastodon-logo", style: "fill"], "Mastodon", "https://ruby.social/@yourhandle"),
+    SocialLink.new(:linkedin, ["linkedin-logo", style: "fill"], "LinkedIn", "https://www.linkedin.com/in/yourhandle/"),
+    SocialLink.new(:github, ["github-logo", style: "fill"], "GitHub", "https://github.com/yourhandle")
+  ].freeze
   belongs_to :villager
   belongs_to :selected_image_generation, class_name: "ImageGeneration", optional: true
 
@@ -9,17 +24,16 @@ class Profile < ApplicationRecord
   has_many :image_generations, through: :profile_answers
   accepts_nested_attributes_for :profile_answers
 
-  validates :first_name, presence: true
-  validates :last_name, presence: true
+  scope :finalized, -> { where.not(selected_image_generation_id: nil) }
+
+  # Just require one name
+  validates :first_name, presence: true, unless: -> { last_name.present? }
+  validates :last_name, presence: true, unless: -> { first_name.present? }
   validate :acceptable_reference_photo
   validate :selected_image_belongs_to_this_profile
 
   def to_param
-    "#{id}-#{first_name}-#{last_name}".parameterize
-  end
-
-  def has_social_links?
-    SOCIAL_LINKS.any? { |attr| self[attr].present? }
+    [id, first_name, last_name].compact_blank.join("-").parameterize
   end
 
   def answer_for(question)
@@ -52,14 +66,22 @@ class Profile < ApplicationRecord
   end
 
   def finalized?
-    selected_image_generation_id.present? && first_name.present? && last_name.present?
+    selected_image_generation_id.present?
   end
 
   def current_phase(questions = ProfileQuestion.active)
+    return :complete if finalized?
     return :photo unless reference_photo.attached?
     return :question if next_unanswered_question(questions)
-    return :finalize unless finalized?
-    :complete
+    :finalize
+  end
+
+  def social_links
+    SOCIAL_LINKS.filter_map do |link|
+      href = attributes[link.attribute]
+      next nil unless href.present?
+      [link, href]
+    end
   end
 
   private

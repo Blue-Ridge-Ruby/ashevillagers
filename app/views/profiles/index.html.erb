@@ -1,4 +1,5 @@
-<div class="max-w-4xl mx-auto px-4 py-12 text-center">
+<div class="mx-auto container px-4 py-12 text-center">
+  <%= render partial: "frame_square_svg" %>
   <img src="/images/ruby.svg" alt="" class="mx-auto mb-6 w-16 h-16">
   <h1 class="text-4xl font-serif text-[#2672B5] mb-4">Meet the Ashevillagers</h1>
   <p class="text-xl text-black font-serif max-w-2xl mx-auto mb-12">
@@ -6,13 +7,9 @@
     When you <br class="hidden sm:block">visit town for Blue Ridge Ruby, you're sure to meet lots of interesting people.
   </p>
 
-  <% if @profiles.any? %>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <% @profiles.each do |profile| %>
-        <%= render "profiles/card", profile: profile %>
-      <% end %>
-    </div>
-  <% else %>
-    <p class="text-gray-500 italic">Profiles coming soon!</p>
-  <% end %>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+    <% @profiles.each do |profile| %>
+      <%= render "profiles/card", profile: profile %>
+    <% end %>
+  </div>
 </div>

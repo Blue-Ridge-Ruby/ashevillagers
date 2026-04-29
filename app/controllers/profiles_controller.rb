@@ -2,13 +2,14 @@ class ProfilesController < ApplicationController
   before_action :authenticate_villager!, only: %i[edit update]
 
   def index
-    @profiles = Profile.includes(:villager, :profile_answers, selected_image_generation: {image_attachment: :blob})
-      .where.not(first_name: [nil, ""])
+    @profiles = Profile
+      .finalized
+      .includes(selected_image_generation: :cropped_attachment)
       .order(:last_name, :first_name)
   end
 
   def show
-    @profile = Profile.includes(profile_answers: :profile_question).find(params[:id])
+    @profile = Profile.find(params[:id])
   end
 
   def edit
@@ -59,6 +60,6 @@ class ProfilesController < ApplicationController
   end
 
   def finalize_params
-    params.require(:profile).permit(:first_name, :last_name, :selected_image_generation_id, *Profile::SOCIAL_LINKS)
+    params.require(:profile).permit(:first_name, :last_name, :show_photo, :selected_image_generation_id, *Profile::SOCIAL_LINKS.map(&:attribute))
   end
 end

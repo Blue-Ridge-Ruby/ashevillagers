@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_26_002004) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_28_230949) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -83,10 +83,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_002004) do
     t.string "bluesky_url"
     t.datetime "created_at", null: false
     t.string "first_name"
+    t.string "github_url"
     t.string "last_name"
     t.string "linkedin_url"
     t.string "mastodon_url"
     t.integer "selected_image_generation_id"
+    t.boolean "show_photo", default: true, null: false
     t.string "twitter_url"
     t.datetime "updated_at", null: false
     t.integer "villager_id", null: false

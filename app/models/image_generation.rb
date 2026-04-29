@@ -26,7 +26,10 @@ class ImageGeneration < ApplicationRecord
 
   lazy_attribute :animal, -> { (self.class.animals - (profile&.image_generations&.pluck(:animal) || [])).sample }
 
-  lazy_attribute :hue, -> { compute_hue }
+  lazy_attribute :hue, -> {
+    compute_hue(attachment: :image, debug: true) => value, {found:}
+    found ? value : compute_hue(attachment: :cropped)
+  }
 
   def title = "#{animal} #{job}"
 

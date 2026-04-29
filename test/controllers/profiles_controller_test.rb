@@ -10,6 +10,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index shows profile cards" do
+    finalize_profile(profiles(:one))
     get root_path
     assert_response :success
     assert_select "a[href*='#{profiles(:one).id}']"
@@ -139,10 +140,11 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href='#{new_session_path}']", text: "Login"
   end
 
-  test "header shows Manage when signed in with profile" do
+  test "header shows Manage when signed in with finalized profile" do
+    finalize_profile(profiles(:one))
     sign_in_villager(villagers(:one))
     get root_path
-    assert_select "a[href='#{edit_profile_path}']", text: "Manage"
+    assert_select "a[href='#{edit_profile_path}']", text: "Update"
   end
 
   test "header shows Create Profile when signed in without profile" do
@@ -150,7 +152,7 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     villager.profile&.destroy
     sign_in_villager(villager)
     get root_path
-    assert_select "a[href='#{edit_profile_path}']", text: "Create Profile"
+    assert_select "a[href='#{edit_profile_path}']", text: "Create"
   end
 
   private
@@ -165,6 +167,13 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
       filename: "test.png",
       content_type: "image/png"
     )
+  end
+
+  def finalize_profile(profile)
+    attach_photo(profile)
+    ig = create_image_generation(profile.profile_answers.first)
+    profile.update!(selected_image_generation: ig)
+    ig
   end
 
   def create_image_generation(profile_answer)

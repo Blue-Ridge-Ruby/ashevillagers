@@ -9,7 +9,7 @@ name = [profile.first_name, profile.last_name].compact_blank.join(" ")
     <div class="absolute left-[7%] top-[7%] w-[86%] h-[88%] z-0">
       <div class="absolute aspect-square top-2 bottom-10 h-auto left-1/2 -translate-x-1/2">
         <% if ig&.cropped&.attached? %>
-          <%= image_tag rails_representation_path(ig.cropped.variant(:card)), class: "absolute w-full h-full top-0 left-0 object-contain object-bottom", alt: ig.title %>
+          <%= image_tag signed_blob_path(ig.cropped.variant(:card).processed), class: "absolute w-full h-full top-0 left-0 object-contain object-bottom", alt: ig.title %>
         <% end %>
       </div>
       <div class="pb-2 absolute left-0 w-full bottom-0 text-center text-xl font-serif">

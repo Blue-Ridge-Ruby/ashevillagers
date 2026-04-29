@@ -14,13 +14,13 @@ class ProfileTest < ActiveSupport::TestCase
     assert_match(/^\d+-jane-doe$/, profile.to_param)
   end
 
-  test "has_social_links? returns true when any link present" do
-    assert profiles(:one).has_social_links?
+  test "social_links returns links when any link present" do
+    assert profiles(:one).social_links.any?
   end
 
-  test "has_social_links? returns false when no links present" do
+  test "social_links is empty when no links present" do
     profile = Profile.new(villager: villagers(:unlinked), first_name: "Pat", last_name: "Taylor")
-    refute profile.has_social_links?
+    refute profile.social_links.any?
   end
 
   test "validates first_name and last_name presence" do

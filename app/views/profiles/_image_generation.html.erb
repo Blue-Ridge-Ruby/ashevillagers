@@ -11,7 +11,7 @@ end
     <div class="absolute left-[7%] top-[7%] w-[86%] h-[88%] z-0">
       <div class="absolute aspect-square top-0 bottom-6 h-auto left-1/2 -translate-x-1/2">
         <% if ready %>
-          <%= image_tag rails_representation_path(image_generation.cropped.variant(:card)), class: "absolute w-full h-full top-0 left-0 object-contain object-bottom", alt: image_generation.title %>
+          <%= image_tag signed_blob_path(image_generation.cropped.variant(:card).processed), class: "absolute w-full h-full top-0 left-0 object-contain object-bottom", alt: image_generation.title %>
         <% else %>
           <div class="relative w-full h-full flex flex-col justify-center items-center">
             <div class="text-sm text-gray-500">Generating…</div>

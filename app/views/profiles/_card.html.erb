@@ -9,7 +9,7 @@ name = [profile.first_name, profile.last_name].compact_blank.join(" ")
     <div class="absolute left-[7%] top-[7%] w-[86%] h-[88%] z-0">
       <div class="absolute aspect-square top-2 bottom-10 h-auto left-1/2 -translate-x-1/2">
         <% if ig&.cropped&.attached? %>
-          <%= image_tag signed_blob_path(ig.cropped.variant(:card).processed), class: "absolute w-full h-full top-0 left-0 object-contain object-bottom", alt: ig.title %>
+          <%= image_tag signed_blob_path(ig.cropped.variant(:card).processed), loading: "lazy", class: "absolute w-full h-full top-0 left-0 object-contain object-bottom", alt: ig.title %>
         <% end %>
       </div>
       <div class="pb-2 absolute left-0 w-full bottom-0 text-center text-xl font-serif">
@@ -19,7 +19,7 @@ name = [profile.first_name, profile.last_name].compact_blank.join(" ")
   <% end %>
   <div class="flex items-center gap-3 pt-1.5 pb-4 px-[6.5%]">
     <% if profile.show_photo && profile.reference_photo.attached? %>
-      <%= image_tag profile.reference_photo.variant(resize_to_fill: [96, 96]), class: "w-14 h-14 rounded-full object-cover ring-2 ring-white shrink-0", alt: "" %>
+      <%= image_tag profile.reference_photo.variant(resize_to_fill: [96, 96]), loading: "lazy", class: "w-14 h-14 rounded-full object-cover ring-2 ring-white shrink-0", alt: "" %>
     <% end %>
     <div class="min-w-0">
       <p class="font-medium text-xl leading-tight truncate"><%= name %></p>

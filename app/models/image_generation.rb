@@ -15,7 +15,7 @@ class ImageGeneration < ApplicationRecord
 
   before_save :ensure_animal
 
-  def source_photo = profile.reference_photo
+  def source_photo = profile.reference_photo.variant(:llm).processed.image
   def job = profile_answer.job_title
 
   lazy_attribute :prompt, -> {
@@ -73,7 +73,7 @@ class ImageGeneration < ApplicationRecord
 
   def generate_image
     raise "Missing source photo" unless source_photo.present?
-    painted = Configured.RubyLLM.paint(prompt, model:, with: source_photo.variant(:llm).blob)
+    painted = Configured.RubyLLM.paint(prompt, model:, with: source_photo.blob)
     @painted = painted if Rails.env.local? # for inspection in dev console
     painted
   end

@@ -74,7 +74,7 @@ jobs:
 
       - name: Cache libvips
         id: cache-libvips
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: /opt/vips
           key: libvips-8.18.2-${{ runner.os }}
@@ -145,7 +145,7 @@ jobs:
 
       - name: Cache libvips
         id: cache-libvips
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: /opt/vips
           key: libvips-8.18.2-${{ runner.os }}

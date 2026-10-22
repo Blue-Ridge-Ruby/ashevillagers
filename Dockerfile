@@ -10,6 +10,10 @@
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=4.0.1
 ARG VIPS_VERSION=8.18.2
+# Make sure NODE_VERSION matches volta.node in package.json
+ARG NODE_VERSION=24.22.1
+
+FROM docker.io/library/node:$NODE_VERSION-slim AS node
 
 # Build libvips from source — Debian's libvips is too old (no oklab colourspace before 8.17)
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS vips-build
@@ -54,14 +58,21 @@ ENV RAILS_ENV="production" \
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
-# Install packages needed to build gems and Node.js for Vite asset compilation
+# Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config node-gyp nodejs npm && \
+    apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install npm packages
+# Node.js for Vite asset compilation — Debian's is too old for npm 12
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    ln -s ../lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+
+# Install npm packages, using the npm version pinned in package.json
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install -g "npm@$(node -p 'require("./package.json").volta.npm')" && \
+    npm ci
 
 # Install application gems
 COPY vendor/* ./vendor/

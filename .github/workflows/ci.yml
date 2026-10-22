@@ -33,8 +33,11 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version-file: package.json
           cache: npm
+
+      - name: Install npm version pinned in package.json
+        run: npm install -g "npm@$(node -p 'require("./package.json").volta.npm')"
 
       - name: Install npm packages
         run: npm ci
@@ -66,8 +69,11 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version-file: package.json
           cache: npm
+
+      - name: Install npm version pinned in package.json
+        run: npm install -g "npm@$(node -p 'require("./package.json").volta.npm')"
 
       - name: Install npm packages
         run: npm ci
@@ -137,8 +143,11 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version-file: package.json
           cache: npm
+
+      - name: Install npm version pinned in package.json
+        run: npm install -g "npm@$(node -p 'require("./package.json").volta.npm')"
 
       - name: Install npm packages
         run: npm ci

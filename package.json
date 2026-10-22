@@ -13,5 +13,12 @@
     "daisyui": "^5.5.19",
     "svelte": "^5.55.0",
     "tailwindcss": "^4.2.2"
+  },
+  "volta": {
+    "node": "24.22.1",
+    "npm": "12.2.1"
+  },
+  "allowScripts": {
+    "fsevents": false
   }
 }
